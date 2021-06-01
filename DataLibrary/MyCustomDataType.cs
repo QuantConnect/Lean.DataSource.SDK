@@ -24,7 +24,7 @@ using System.Collections.Generic;
 namespace DataLibrary
 {
     /// <summary>
-    /// 
+    /// Example custom data type
     /// </summary>
     public class MyCustomDataType : BaseData
     {

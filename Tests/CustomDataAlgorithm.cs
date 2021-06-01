@@ -31,7 +31,7 @@ namespace Tests
         /// </summary>
         public override void Initialize()
         {
-            AddData<MyCustomDataType>("SPY");
+            var security = AddData<MyCustomDataType>("SPY");
         }
 
         /// <summary>
