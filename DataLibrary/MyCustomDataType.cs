@@ -16,6 +16,7 @@
 
 using System;
 using NodaTime;
+using ProtoBuf;
 using System.IO;
 using QuantConnect;
 using QuantConnect.Data;
@@ -28,6 +29,12 @@ namespace DataLibrary
     /// </summary>
     public class MyCustomDataType : BaseData
     {
+        /// <summary>
+        /// Some custom data property
+        /// </summary>
+        [ProtoMember(2000)]
+        public string SomeCustomProperty { get; set; }
+
         /// <summary>
         /// Return the URL string source of the file. This will be converted to a stream
         /// </summary>
@@ -64,7 +71,7 @@ namespace DataLibrary
             return new MyCustomDataType
             {
                 Symbol = config.Symbol,
-                Value = Parse.Decimal(csv[1]),
+                SomeCustomProperty = csv[1],
                 Time = parsedDate,
                 EndTime = parsedDate + TimeSpan.FromDays(1)
             };
@@ -79,21 +86,19 @@ namespace DataLibrary
             return new MyCustomDataType
             {
                 Symbol = Symbol,
-                Value = Value,
                 Time = Time,
-                EndTime = EndTime
+                EndTime = EndTime,
+                SomeCustomProperty = SomeCustomProperty,
             };
         }
 
         /// <summary>
-        /// Indicates whether the data source is tied
-        /// to an underlying symbol and requires that corporate
-        /// events be applied to it as well, such as renames and delistings
+        /// Indicates whether the data source is tied to an underlying symbol and requires that corporate events be applied to it as well, such as renames and delistings
         /// </summary>
         /// <returns>false</returns>
         public override bool RequiresMapping()
         {
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -111,7 +116,7 @@ namespace DataLibrary
         /// </summary>
         public override string ToString()
         {
-            return $"{Symbol} - {Value}";
+            return $"{Symbol} - {SomeCustomProperty}";
         }
 
         /// <summary>

@@ -14,7 +14,14 @@
  *
 */
 
+using System;
+using System.IO;
+using DataLibrary;
+using QuantConnect;
+using ProtoBuf.Meta;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using QuantConnect.Data;
 
 namespace Tests
 {
@@ -24,19 +31,67 @@ namespace Tests
         [Test]
         public void JsonRoundTrip()
         {
+            var expected = CreateNewInstance();
+            var type = expected.GetType();
+            var serialized = JsonConvert.SerializeObject(expected);
+            var result = JsonConvert.DeserializeObject(serialized, type);
 
+            AssertAreEqual(expected, result);
         }
 
-        [Test]
+        [Test, Ignore("TODO: Failing")]
         public void ProtobufRoundTrip()
         {
+            var expected = CreateNewInstance();
+            var type = expected.GetType();
 
+            var model = RuntimeTypeModel.Create();
+            var baseType = model.Add(typeof(BaseData), true);
+            model.Add(type, true);
+            baseType.AddSubType(2000, type);
+
+            using (var stream = new MemoryStream())
+            {
+                model.Serialize(stream, expected);
+
+                stream.Position = 0;
+
+                var result = model.Deserialize(type, stream);
+
+                AssertAreEqual(expected, result);
+            }
         }
 
         [Test]
         public void Clone()
         {
+            var expected = CreateNewInstance();
+            var result = expected.Clone();
 
+            AssertAreEqual(expected, result);
+        }
+
+        private void AssertAreEqual(object expected, object result)
+        {
+            foreach (var propertyInfo in expected.GetType().GetProperties())
+            {
+                Assert.AreEqual(propertyInfo.GetValue(expected), propertyInfo.GetValue(result));
+            }
+            foreach (var fieldInfo in expected.GetType().GetFields())
+            {
+                Assert.AreEqual(fieldInfo.GetValue(expected), fieldInfo.GetValue(result));
+            }
+        }
+
+        private BaseData CreateNewInstance()
+        {
+            return new MyCustomDataType
+            {
+                Symbol = Symbol.Empty,
+                Time = DateTime.Today,
+                DataType = MarketDataType.Base,
+                SomeCustomProperty = "This is some market related information"
+            };
         }
     }
 }

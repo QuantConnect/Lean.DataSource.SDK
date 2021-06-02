@@ -37,6 +37,8 @@ The script should be provided to `QuantConnect` as well as the fork repository a
 
 ### User guide
 
+TODO:
+
 ### Tutorials
 
 #### Create Data Type
@@ -64,11 +66,28 @@ The `DataLibrary` project holds an example custom data type [MyCustomDataType](h
 
 It will be a requisite that each data type has a json and protobuf round trip serialization and deserialization, as well as a clone unit test. Examples provided at [MyCustomDataTypeTests](https://github.com/QuantConnect/LeanDataSdk/blob/master/Tests/MyCustomDataTypeTests.cs)
 
+The only adjusment `MyCustomDataTypeTests` test suite requires for a new data type should be the `CreateNewInstance()` method. Which should returned a fully initialized data point.
+
 #### Create Algorithm
 
+##### Introduction
 
+Creating an example `QCAlgorithm` will allow quants to understand how to consume a data set and what value could it provide to their trading strategy.
+
+##### Developing Algorithm
+
+A [sample](https://github.com/QuantConnect/LeanDataSdk/blob/master/Tests/CustomDataAlgorithm.cs) algorithm is provided in this repository for the defined custom data type.
+
+- `Initialize()` Specifies the **data** and resolution required, as well as the cash and start-end dates for the algorithm. This is where the custom data should be added.
+- `OnData(Slice slice)` is the primary entry point for the algorithm. Each new data point will be pumped through it. This should be where the custom data is retrieved from the `slice` object and used.
 
 #### Create Data Converters
+
+##### Introduction
+
+Data converter scripts will be in charge of fetching new data and processing it into a format that Lean and the [new data type](https://github.com/QuantConnect/LeanDataSdk#create-data-type) will be able to read.
+
+TODO:
 
 ##### Python Notebook
 ##### CSharp Notebook
@@ -77,3 +96,4 @@ It will be a requisite that each data type has a json and protobuf round trip se
 
 ### Api reference
 
+TODO:
