@@ -32,5 +32,11 @@ namespace Tests
         {
 
         }
+
+        [Test]
+        public void Clone()
+        {
+
+        }
     }
 }
