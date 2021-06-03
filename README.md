@@ -30,10 +30,9 @@ Once it is cloned locally, should be able to successfully build the solution, ru
 
 #### Usage
 
-- Once the repository is forked, the existing example implementation should be adjusted, in the fork, to create a new data type for a particular data set.
-- Converter and downloader scripts should be developed following the [examples in this repository](https://github.com/QuantConnect/LeanDataSdk/tree/master/DataConverterScript).
-
-The script should be provided to `QuantConnect` as well as the fork repository at a particual commit.
+- Once the repository is forked, the existing example implementation should be adjusted to create a new data type for a particular data set.
+	- The Assembly name and data type have to be changed since they should be unique.
+- Converter and downloader scripts should be developed following the [examples in this repository](https://github.com/QuantConnect/LeanDataSdk/tree/master/DataConverterScript). These script should be provided to `QuantConnect` as well as the fork repository at a particual commit.
 
 ### User guide
 

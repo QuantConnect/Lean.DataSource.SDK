@@ -27,6 +27,7 @@ namespace DataLibrary
     /// <summary>
     /// Example custom data type
     /// </summary>
+    [ProtoContract(SkipConstructor = true)]
     public class MyCustomDataType : BaseData
     {
         /// <summary>

@@ -15,7 +15,9 @@
 */
 
 using System;
+using ProtoBuf;
 using System.IO;
+using System.Linq;
 using DataLibrary;
 using QuantConnect;
 using ProtoBuf.Meta;
@@ -39,26 +41,23 @@ namespace Tests
             AssertAreEqual(expected, result);
         }
 
-        [Test, Ignore("TODO: Failing")]
+        [Test]
         public void ProtobufRoundTrip()
         {
             var expected = CreateNewInstance();
             var type = expected.GetType();
 
-            var model = RuntimeTypeModel.Create();
-            var baseType = model.Add(typeof(BaseData), true);
-            model.Add(type, true);
-            baseType.AddSubType(2000, type);
+            RuntimeTypeModel.Default[typeof(BaseData)].AddSubType(2000, type);
 
             using (var stream = new MemoryStream())
             {
-                model.Serialize(stream, expected);
+                Serializer.Serialize(stream, expected);
 
                 stream.Position = 0;
 
-                var result = model.Deserialize(type, stream);
+                var result = Serializer.Deserialize(type, stream);
 
-                AssertAreEqual(expected, result);
+                AssertAreEqual(expected, result, filterByCustomAttributes: true);
             }
         }
 
@@ -71,11 +70,15 @@ namespace Tests
             AssertAreEqual(expected, result);
         }
 
-        private void AssertAreEqual(object expected, object result)
+        private void AssertAreEqual(object expected, object result, bool filterByCustomAttributes = false)
         {
             foreach (var propertyInfo in expected.GetType().GetProperties())
             {
-                Assert.AreEqual(propertyInfo.GetValue(expected), propertyInfo.GetValue(result));
+                // we skip Symbol which isn't protobuffed
+                if (filterByCustomAttributes && propertyInfo.CustomAttributes.Count() != 0)
+                {
+                    Assert.AreEqual(propertyInfo.GetValue(expected), propertyInfo.GetValue(result));
+                }
             }
             foreach (var fieldInfo in expected.GetType().GetFields())
             {
