@@ -18,14 +18,12 @@ using System;
 using ProtoBuf;
 using System.IO;
 using System.Linq;
-using DataLibrary;
-using QuantConnect;
 using ProtoBuf.Meta;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using QuantConnect.Data;
 
-namespace Tests
+namespace QuantConnect.DataLibrary.Tests
 {
     [TestFixture]
     public class MyCustomDataTypeTests

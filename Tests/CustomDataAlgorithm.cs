@@ -14,14 +14,12 @@
  *
 */
 
-using DataLibrary;
-using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Util;
 using QuantConnect.Orders;
 using QuantConnect.Algorithm;
 
-namespace Tests
+namespace QuantConnect.DataLibrary.Tests
 {
     /// <summary>
     /// Example algorithm using the custom data type as a source of alpha
