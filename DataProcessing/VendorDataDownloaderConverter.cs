@@ -15,7 +15,10 @@
 
 using QuantConnect.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using QuantConnect.DataLibrary;
 
 namespace QuantConnect.DataProcessing
 {
@@ -76,7 +79,29 @@ namespace QuantConnect.DataProcessing
         {
             try
             {
-                // Your data downloading/processing code goes here
+                // Your data downloading/processing code goes here. The lines below
+                // can be deleted since they are only meant to be an example.
+                // ================================================================
+                var underlying = Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+                var symbol = Symbol.CreateBase(
+                    typeof(MyCustomDataType),
+                    underlying,
+                    Market.USA);
+
+                var lines = new[]
+                {
+                    "20131001,buy",
+                    "20131003,buy",
+                    "20131006,buy",
+                    "20131007,sell",
+                    "20131009,buy",
+                    "20131011,sell"
+                };
+                
+                var instances = lines.Select(x => ParseLine(symbol, x));
+                var csvLines = instances.Select(x => ToCsvLine(x));
+                
+                SaveContentsToFile(symbol, csvLines);
             }
             catch (Exception e)
             {
@@ -85,6 +110,52 @@ namespace QuantConnect.DataProcessing
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Example method to parse and create an instance from a line of CSV
+        /// </summary>
+        /// <param name="symbol">Symbol</param>
+        /// <param name="line">Line of raw data</param>
+        /// <returns>Instance of <see cref="MyCustomDataType"/></returns>
+        private MyCustomDataType ParseLine(Symbol symbol, string line)
+        {
+            var csv = line.Split(',');
+            return new MyCustomDataType
+            {
+                Time = Parse.DateTimeExact(csv[0], "yyyyMMdd"),
+                Symbol = symbol,
+                
+                SomeCustomProperty = csv[1]
+            };
+        }
+
+        /// <summary>
+        /// Example method to convert an instance to a CSV line
+        /// </summary>
+        /// <param name="instance">Custom Data instance</param>
+        /// <returns>CSV line</returns>
+        private string ToCsvLine(MyCustomDataType instance)
+        {
+            return string.Join(",",
+                $"{instance.Time:yyyyMMdd}",
+                instance.SomeCustomProperty);
+        }
+
+        /// <summary>
+        /// Example method to save CSV lines to disk
+        /// </summary>
+        /// <param name="symbol">Symbol of the data</param>
+        /// <param name="csvLines">CSV lines to write</param>
+        private void SaveContentsToFile(Symbol symbol, IEnumerable<string> csvLines)
+        {
+            var ticker = symbol.Value.ToLowerInvariant();
+            
+            var tempPath = new FileInfo(Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}-{ticker}.csv"));
+            var finalPath = Path.Combine(_destinationDirectory, $"{ticker}.csv");
+
+            File.WriteAllLines(tempPath.FullName, csvLines);
+            tempPath.MoveTo(finalPath, true);
         }
 
         /// <summary>
