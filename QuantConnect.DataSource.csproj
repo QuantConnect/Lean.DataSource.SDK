@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>QuantConnect.DataLibrary</RootNamespace>
+    <RootNamespace>QuantConnect.DataSource</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,6 +10,18 @@
     <PackageReference Include="protobuf-net" Version="3.0.29" />
     <PackageReference Include="protobuf-net.Core" Version="3.0.29" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="tests\**" />
+    <EmbeddedResource Remove="tests\**" />
+    <None Remove="tests\**" />
+    <Compile Remove="Demonstration.cs" />
+    <Compile Remove="Demostration.cs" />
+    <None Remove=".gitignore" />
+    <None Remove="process.sample.ipynb" />
+    <None Remove="process.sample.py" />
+    <None Remove="process.sample.sh" />
   </ItemGroup>
 
 </Project>

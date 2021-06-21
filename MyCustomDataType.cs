@@ -18,11 +18,10 @@ using System;
 using NodaTime;
 using ProtoBuf;
 using System.IO;
-using QuantConnect;
 using QuantConnect.Data;
 using System.Collections.Generic;
 
-namespace QuantConnect.DataLibrary
+namespace QuantConnect.DataSource
 {
     /// <summary>
     /// Example custom data type

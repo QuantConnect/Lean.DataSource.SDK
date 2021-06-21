@@ -15,8 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build
-        run: dotnet build /p:Configuration=Release /v:quiet /p:WarningLevel=1 MyCustomDataType.sln
+      - name: BuildDataSource
+        run: dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
+      - name: BuildTests
+        run: dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
       - name: Run Tests
-        run: dotnet test ./Tests/bin/Release/net5.0/Tests.dll
+        run: dotnet test ./tests/bin/Release/net5.0/Tests.dll
