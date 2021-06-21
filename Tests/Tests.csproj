@@ -4,7 +4,7 @@
     <RootNamespace>QuantConnect.DataLibrary.Tests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Demostration.cs" Link="Demostration.cs" />
+    <Compile Include="..\Demonstration.cs" Link="Demonstration.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="protobuf-net" Version="3.0.29" />
