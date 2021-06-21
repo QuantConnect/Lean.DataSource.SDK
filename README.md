@@ -15,9 +15,8 @@ It is composed by example .Net solution for the data type and converter scripts.
 
 The solution targets dotnet 5, for installation instructions please follow [dotnet download](https://dotnet.microsoft.com/download).
 
-The data downloader and converter script can be developed in different ways: Python script, C# or Python jupyter notebook or even a bash script.
+The data downloader and converter script can be developed in different ways: Python script, Python jupyter notebook or even a bash script.
 - The python script should be compatible with python 3.6.8
-- C# notebook will run using [dotnet interactive](https://github.com/dotnet/interactive)
 - Bash script will run on Ubuntu Bionic
 
 Specifically, the enviroment where these scripts will be run is [quantconnect/research](https://hub.docker.com/repository/docker/quantconnect/research) based on [quantconnect/lean:foundation](https://hub.docker.com/repository/docker/quantconnect/lean).
@@ -89,7 +88,6 @@ Data converter scripts will be in charge of fetching new data and processing it 
 TODO:
 
 ##### Python Notebook
-##### CSharp Notebook
 ##### Python Script
 ##### Bash Script
 

@@ -4,6 +4,9 @@
     <RootNamespace>QuantConnect.DataLibrary.Tests</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Demonstration.cs" Link="Demonstration.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="protobuf-net" Version="3.0.29" />
     <PackageReference Include="protobuf-net.Core" Version="3.0.29" />
     <PackageReference Include="NUnit" Version="3.13.1" />
@@ -15,6 +18,6 @@
     <PackageReference Include="QuantConnect.Algorithm" Version="2.5.11800" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
+    <ProjectReference Include="..\QuantConnect.DataSource.csproj" />
   </ItemGroup>
 </Project>
