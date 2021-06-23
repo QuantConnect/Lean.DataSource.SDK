@@ -1,4 +1,4 @@
-![LEAN Data Source SDK](https://cdn.quantconnect.com/i/tu/github-leandatasourcesdk.png)
+![LEAN Data Source SDK](http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/datasources/Github_LeanDataSourceSDK.png)
 
 # Lean DataSource SDK
 
