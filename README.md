@@ -1,4 +1,6 @@
-# LeanDataSdk
+![LEAN Data Source SDK](https://cdn.quantconnect.com/i/tu/github-leandatasourcesdk.png)
+
+# Lean DataSource SDK
 
 [![Build Status](https://github.com/QuantConnect/LeanDataSdk/workflows/Build%20%26%20Test/badge.svg)](https://github.com/QuantConnect/LeanDataSdk/actions?query=workflow%3A%22Build%20%26%20Test%22)
 
