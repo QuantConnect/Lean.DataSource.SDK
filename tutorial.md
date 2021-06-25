@@ -1,13 +1,13 @@
 # Tutorial - Create Your Own Data Source
 
 Implementing data sources is split into three parts:
-  1. Creating the data source class (`MyCustomDataType.cs`)
+  1. Creating the data source class ([`MyCustomDataType.cs`](https://github.com/QuantConnect/Lean.DataSource.SDK/blob/master/MyCustomDataType.cs))
   2. Creating data downloader/processor (`process.*`)
   3. Creating tests and a demonstration algorithm
 
 ## Prerequisites
   1. Fork this repository to your own GitHub profile
-  2. Install .NET 5.0 SDK - https://dotnet.microsoft.com/download/dotnet/5.0
+  2. Install [.NET 5.0 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
 
 ## Part 1: Setup C# Data Source Class
   1. Open the `MyCustomDataType.cs` file for editing
@@ -38,9 +38,9 @@ Implementing data sources is split into three parts:
 
 ## Part 2: Setup Downloading/Processing Script
   1. Create one of the following files to download/process your data:
-  * Python: `process.py`
-  * Bash: `process.sh`
-  * Jupyter Notebook: `process.ipynb`
+  * Python: [`process.py`](https://github.com/QuantConnect/Lean.DataSource.SDK/blob/master/process.sample.py)
+  * Bash: [`process.sh`](https://github.com/QuantConnect/Lean.DataSource.SDK/blob/master/process.sample.sh)
+  * Jupyter Notebook: [`process.ipynb`](https://github.com/QuantConnect/Lean.DataSource.SDK/blob/master/process.sample.ipynb)
 
   2. In `process.*`, output your processed/final data to: `/temp-output-directory/alternative/{{vendorName}}/{{dataSourceName}}/`
   * Replace `{{vendorName}}` with your vendor name (e.g. `quantconnect`)
@@ -54,10 +54,10 @@ Implementing data sources is split into three parts:
   3. If you are processing data that is associated with stocks/equities, review the [data sources related to equities](#subsection---data-sources-related-to-equities) section
 
 ## Part 3: Setup Testing and Demonstration Algorithm
-  1. Edit `Demonstration.cs` and create an example of how to load and use your data
+  1. Edit [`Demonstration.cs`](https://github.com/QuantConnect/Lean.DataSource.SDK/blob/master/Demonstration.cs) and create an example of how to load and use your data
   * Rename the algorithm class name to the name of the class created in part 1
   * The algorithm should be very simple and minimal
-  2. Open the `tests/MyCustomDataTypeTests.cs` file for editing
+  2. Open the [`tests/MyCustomDataTypeTests.cs`](https://github.com/QuantConnect/Lean.DataSource.SDK/blob/master/tests/MyCustomDataTypeTests.cs) file for editing
   3. Scroll to the bottom of the code and make `CreateNewInstance()` return your new data type
   * Data can be fake data, it doesn't have to be real
   * Set all fields/properties of your class when creating your new data type
