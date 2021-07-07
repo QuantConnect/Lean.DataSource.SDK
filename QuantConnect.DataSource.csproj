@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>QuantConnect.DataSource</RootNamespace>
+    <DocumentationFile>$(OutputPath)\QuantConnect.DataSource.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
