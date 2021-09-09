@@ -2,14 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <OutputPath>bin\$(Configuration)</OutputPath>
     <RootNamespace>QuantConnect.DataSource</RootNamespace>
+    
+    <!--Append your data source name to the end of `QuantConnect.DataSource` in the two lines below-->
+    <!--Example: `QuantConnect.DataSource.SDK`, `QuantConnect.DataSource.SDK.xml`-->
+    <AssemblyName>QuantConnect.DataSource</AssemblyName>
     <DocumentationFile>$(OutputPath)\QuantConnect.DataSource.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="QuantConnect.Common" Version="2.5.11800" />
     <PackageReference Include="protobuf-net" Version="3.0.29" />
-    <PackageReference Include="protobuf-net.Core" Version="3.0.29" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
@@ -22,6 +25,11 @@
     <None Remove="process.sample.ipynb" />
     <None Remove="process.sample.py" />
     <None Remove="process.sample.sh" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Lean\Common\QuantConnect.csproj" />
+    <ProjectReference Include="..\Lean\Engine\QuantConnect.Lean.Engine.csproj" />
   </ItemGroup>
 
 </Project>

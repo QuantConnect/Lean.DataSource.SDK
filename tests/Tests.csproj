@@ -1,23 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>QuantConnect.DataLibrary.Tests</RootNamespace>
   </PropertyGroup>
+  
   <ItemGroup>
     <Compile Include="..\Demonstration.cs" Link="Demonstration.cs" />
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="protobuf-net" Version="3.0.29" />
-    <PackageReference Include="protobuf-net.Core" Version="3.0.29" />
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="16.9.4" />
-    <PackageReference Include="QuantConnect.Algorithm" Version="2.5.11800" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\QuantConnect.DataSource.csproj" />
+    <ProjectReference Include="..\..\Lean\Algorithm\QuantConnect.Algorithm.csproj" />
   </ItemGroup>
+  
 </Project>
