@@ -44,5 +44,5 @@ Key requirements for new vendors include:
 
 ### Tutorials
 
- - See [Tutorials](https://github.com/QuantConnect/Lean/blob/master/tutorials.md) for a step by step guide for creating a new LEAN Data Source.
+ - See [Tutorials](https://www.quantconnect.com/docs/v2/our-platform/tutorials/datasets/contributing-datasets) for a step by step guide for creating a new LEAN Data Source.
  
