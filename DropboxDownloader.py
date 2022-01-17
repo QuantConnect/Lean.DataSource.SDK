@@ -26,11 +26,10 @@ import sys
 import time
 import os
 
-API_KEY = ""
-outputBaseDirectory = "/"
+API_KEY = os.environ.get("apiKey")
+outputBaseDirectory = os.environ.get("outputBaseDirectory", "/raw")
 
 def DownloadZipFile(filePath):
-	global outputBaseDirectory
 
 	print(f"Starting downloading file at: {filePath}") 
 
@@ -81,10 +80,16 @@ def GetFilePathsFromDate(targetLocation, dateString):
 
 def main():
 	global API_KEY, outputBaseDirectory
-	API_KEY = sys.argv[1]
-	location = sys.argv[2]
-	dateString = sys.argv[3]
-	if len(sys.argv) > 4:
+	location = os.environ.get("location")
+	dateString = os.environ.get("dateString")
+	inputCount = len(sys.argv)
+	if inputCount > 1:
+		API_KEY = sys.argv[1]
+	if inputCount > 2:	
+		location = sys.argv[2]
+	if inputCount > 3:
+		dateString = sys.argv[3]
+	if inputCount > 4:
 		outputBaseDirectory = sys.argv[4]
 	target_paths = GetFilePathsFromDate(location,dateString)
 	print(f"Found {len(target_paths)} files with following paths {target_paths}")
