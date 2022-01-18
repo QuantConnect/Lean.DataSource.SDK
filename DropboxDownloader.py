@@ -15,10 +15,10 @@
 # Files to be downloaded are filtered based on given date present in file name.
 
 # ARGUMENTS
-# API_KEY: Dropbox API KEY with read access.
-# location: path of the dropbox directory to search files within.
-# dateString: select files from provided directory having dateString in file name.
-# outputBaseDirectory(optional): base path of the output directory to store to downloaded files.
+# DROPBOX_API_KEY: Dropbox API KEY with read access.
+# DROPBOX_SOURCE_DIRECTORY: path of the dropbox directory to search files within.
+# DROPBOX_OUTPUT_DIRECTORY(optional): base path of the output directory to store to downloaded files.
+# cmdline args expected in order: DROPBOX_API_KEY, DROPBOX_SOURCE_DIRECTORY, QC_DATAFLEET_DEPLOYMENT_DATE, DROPBOX_OUTPUT_DIRECTORY
 
 import requests
 import json
@@ -26,8 +26,8 @@ import sys
 import time
 import os
 
-API_KEY = os.environ.get("apiKey")
-outputBaseDirectory = os.environ.get("outputBaseDirectory", "/raw")
+DROPBOX_API_KEY = os.environ.get("DROPBOX_API_KEY")
+DROPBOX_OUTPUT_DIRECTORY = os.environ.get("DROPBOX_OUTPUT_DIRECTORY", "/raw")
 
 def DownloadZipFile(filePath):
 
@@ -39,7 +39,7 @@ def DownloadZipFile(filePath):
 	# data to be sent to api
 	data = {"path": filePath}
 
-	headers = {"Authorization": f"Bearer {API_KEY}",
+	headers = {"Authorization": f"Bearer {DROPBOX_API_KEY}",
 				"Dropbox-API-Arg": json.dumps(data)}
 
 	# sending post request and saving response as response object
@@ -48,7 +48,7 @@ def DownloadZipFile(filePath):
 	response.raise_for_status() # ensure we notice bad responses
 
 	fileName = filePath.split("/")[-1]
-	outputPath = os.path.join(outputBaseDirectory, fileName)
+	outputPath = os.path.join(DROPBOX_OUTPUT_DIRECTORY, fileName)
 	
 	with open(outputPath, "wb") as f:
 		f.write(response.content)
@@ -59,7 +59,7 @@ def GetFilePathsFromDate(targetLocation, dateString):
 	API_ENDPOINT_FILEPATH = "https://api.dropboxapi.com/2/files/list_folder"
 
 	headers = {"Content-Type": "application/json",
-				"Authorization": f"Bearer {API_KEY}"}
+				"Authorization": f"Bearer {DROPBOX_API_KEY}"}
 	
 	# data to be sent to api
 	data = {"path": targetLocation,
@@ -79,19 +79,19 @@ def GetFilePathsFromDate(targetLocation, dateString):
 	return target_paths
 
 def main():
-	global API_KEY, outputBaseDirectory
-	location = os.environ.get("location")
-	dateString = os.environ.get("dateString")
+	global DROPBOX_API_KEY, DROPBOX_OUTPUT_DIRECTORY
+	DROPBOX_SOURCE_DIRECTORY = os.environ.get("DROPBOX_SOURCE_DIRECTORY")
+	QC_DATAFLEET_DEPLOYMENT_DATE = os.environ.get("QC_DATAFLEET_DEPLOYMENT_DATE")
 	inputCount = len(sys.argv)
 	if inputCount > 1:
-		API_KEY = sys.argv[1]
+		DROPBOX_API_KEY = sys.argv[1]
 	if inputCount > 2:	
-		location = sys.argv[2]
+		DROPBOX_SOURCE_DIRECTORY = sys.argv[2]
 	if inputCount > 3:
-		dateString = sys.argv[3]
+		QC_DATAFLEET_DEPLOYMENT_DATE = sys.argv[3]
 	if inputCount > 4:
-		outputBaseDirectory = sys.argv[4]
-	target_paths = GetFilePathsFromDate(location,dateString)
+		DROPBOX_OUTPUT_DIRECTORY = sys.argv[4]
+	target_paths = GetFilePathsFromDate(DROPBOX_SOURCE_DIRECTORY, QC_DATAFLEET_DEPLOYMENT_DATE)
 	print(f"Found {len(target_paths)} files with following paths {target_paths}")
 
 	#download files
