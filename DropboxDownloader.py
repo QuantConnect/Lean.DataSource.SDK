@@ -27,6 +27,8 @@ import time
 import os
 
 DROPBOX_API_KEY = os.environ.get("DROPBOX_API_KEY")
+DROPBOX_SOURCE_DIRECTORY = os.environ.get("DROPBOX_SOURCE_DIRECTORY")
+QC_DATAFLEET_DEPLOYMENT_DATE = os.environ.get("QC_DATAFLEET_DEPLOYMENT_DATE")
 DROPBOX_OUTPUT_DIRECTORY = os.environ.get("DROPBOX_OUTPUT_DIRECTORY", "/raw")
 
 def DownloadZipFile(filePath):
@@ -79,9 +81,7 @@ def GetFilePathsFromDate(targetLocation, dateString):
 	return target_paths
 
 def main():
-	global DROPBOX_API_KEY, DROPBOX_OUTPUT_DIRECTORY
-	DROPBOX_SOURCE_DIRECTORY = os.environ.get("DROPBOX_SOURCE_DIRECTORY")
-	QC_DATAFLEET_DEPLOYMENT_DATE = os.environ.get("QC_DATAFLEET_DEPLOYMENT_DATE")
+	global DROPBOX_API_KEY, DROPBOX_SOURCE_DIRECTORY, QC_DATAFLEET_DEPLOYMENT_DATE, DROPBOX_OUTPUT_DIRECTORY
 	inputCount = len(sys.argv)
 	if inputCount > 1:
 		DROPBOX_API_KEY = sys.argv[1]
