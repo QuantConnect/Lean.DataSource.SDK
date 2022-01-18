@@ -25,6 +25,7 @@ import json
 import sys
 import time
 import os
+from pathlib import Path
 
 DROPBOX_API_KEY = os.environ.get("DROPBOX_API_KEY")
 DROPBOX_SOURCE_DIRECTORY = os.environ.get("DROPBOX_SOURCE_DIRECTORY")
@@ -91,6 +92,10 @@ def main():
 		QC_DATAFLEET_DEPLOYMENT_DATE = sys.argv[3]
 	if inputCount > 4:
 		DROPBOX_OUTPUT_DIRECTORY = sys.argv[4]
+
+	# make output path if doesn't exists
+	Path(DROPBOX_OUTPUT_DIRECTORY).mkdir(parents=True, exist_ok=True)
+	
 	target_paths = GetFilePathsFromDate(DROPBOX_SOURCE_DIRECTORY, QC_DATAFLEET_DEPLOYMENT_DATE)
 	print(f"Found {len(target_paths)} files with following paths {target_paths}")
 
