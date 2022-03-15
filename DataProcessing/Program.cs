@@ -37,7 +37,7 @@ namespace QuantConnect.DataProcessing
             var destinationDirectory = Path.Combine(
                 Config.Get("temp-output-directory", "/temp-output-directory"),
                 "alternative",
-                "VendorName");
+                "vendorname");
 
             MyCustomDataDownloader instance = null;
             try
