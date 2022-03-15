@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <AssemblyName>process</AssemblyName>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="QuantConnect.Lean.Engine" Version="2.5.*"/>
+        <PackageReference Include="QuantConnect.Research" Version="2.5.*"/>
+        <PackageReference Include="QuantConnect.pythonnet" Version="2.0.*" />
+        <PackageReference Include="fasterflect" Version="3.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\QuantConnect.DataSource.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="CLRImports.py" />
+        <Content Include="CLRImports.py">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="config.json" />
+        <Content Include="config.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+</Project>

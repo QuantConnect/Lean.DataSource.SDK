@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>QuantConnect.DataSource</RootNamespace>
-    <DocumentationFile>$(OutputPath)\QuantConnect.DataSource.xml</DocumentationFile>
+    <AssemblyName>QuantConnect.DataSource.MyCustonDataType</AssemblyName>
+    <OutputPath>bin\$(Configuration)</OutputPath>
+    <DocumentationFile>$(OutputPath)\QuantConnect.DataSource.MyCustonDataType.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,11 +17,11 @@
     <Compile Remove="tests\**" />
     <EmbeddedResource Remove="tests\**" />
     <None Remove="tests\**" />
+    <Compile Remove="DataProcessing\**" />
+    <EmbeddedResource Remove="DataProcessing\**" />
+    <None Remove="DataProcessing\**" />
     <Compile Remove="Demonstration.cs" />
+    <Compile Remove="DemonstrationUniverse.cs" />
     <None Remove=".gitignore" />
-    <None Remove="process.sample.ipynb" />
-    <None Remove="process.sample.py" />
-    <None Remove="process.sample.sh" />
   </ItemGroup>
-
 </Project>
