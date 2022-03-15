@@ -5,6 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Demonstration.cs" Link="Demonstration.cs" />
+    <Compile Include="..\DemonstrationUniverse.cs" Link="DemonstrationUniverse.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="protobuf-net" Version="3.0.29" />
