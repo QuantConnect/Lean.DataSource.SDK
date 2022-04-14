@@ -8,6 +8,8 @@ mv MyCustomDataUniverseType.cs ${vendorNameDatasetNameUniverse}.cs
 
 # In the QuantConnect.DataSource.csproj file, rename the MyCustomDataType class to {vendorNameDatasetName}
 sed -i "s/MyCustomDataType/$vendorNameDatasetName/g" QuantConnect.DataSource.csproj
+sed -i "s/Demonstration.cs/${vendorNameDatasetName}Algorithm.cs/g" QuantConnect.DataSource.csproj
+sed -i "s/DemonstrationUniverse.cs/${vendorNameDatasetNameUniverse}SelectionAlgorithm.cs/g" QuantConnect.DataSource.csproj
 
 # In the {vendorNameDatasetName}.cs file, rename the MyCustomDataType class to {vendorNameDatasetName}
 sed -i "s/MyCustomDataType/$vendorNameDatasetName/g" ${vendorNameDatasetName}.cs
@@ -40,6 +42,7 @@ mv DemonstrationUniverse.cs ${vendorNameDatasetNameUniverse}SelectionAlgorithm.c
 mv DemonstrationUniverse.py ${vendorNameDatasetNameUniverse}SelectionAlgorithm.py
 
 # Rename the tests/MyCustomDataTypeTests.cs file to tests/{vendorNameDatasetName}Tests.cs
+sed -i "s/MyCustomDataType/${vendorNameDatasetName}/g" tests/MyCustomDataTypeTests.cs
 mv tests/MyCustomDataTypeTests.cs tests/${vendorNameDatasetName}Tests.cs
 
 # In tests/Tests.csproj, rename the Demonstration.cs and DemonstrationUniverse.cs to {vendorNameDatasetName}Algorithm.cs and {vendorNameDatasetNameUniverse}SelectionAlgorithm.cs
