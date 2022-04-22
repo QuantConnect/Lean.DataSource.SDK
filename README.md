@@ -15,7 +15,7 @@ It is composed by example .Net solution for the data type and converter scripts.
 
 The solution targets dotnet 5, for installation instructions please follow [dotnet download](https://dotnet.microsoft.com/download).
 
-The data downloader and converter script can be developed in different ways: Python script, Python jupyter notebook or even a bash script.
+The data downloader and converter script can be developed in different ways: C# executable, Python script, Python Jupyter notebook or even a bash script.
 - The python script should be compatible with python 3.6.8
 - Bash script will run on Ubuntu Bionic
 
@@ -23,7 +23,7 @@ Specifically, the enviroment where these scripts will be run is [quantconnect/re
 
 ### Installation
 
-This repository should be forked for each unique data source which requires its own data processing. Once it is cloned locally, you should be able to successfully build the solution, run all tests and execute the conveter scripts.
+The "Use this template" feature should be used for each unique data source which requires its own data processing. Once it is cloned locally, you should be able to successfully build the solution, run all tests and execute the downloader and/or conveter scripts. The final version should pass all CI tests of GitHub Actions.
 
 Once ready, please contact support@quantconnect.com and we will create a listing in the QuantConnect Data Market for your company and link to your public repository and commit hash. 
 
@@ -44,5 +44,4 @@ Key requirements for new vendors include:
 
 ### Tutorials
 
- - See [Tutorials](https://www.quantconnect.com/docs/v2/our-platform/tutorials/datasets/contributing-datasets) for a step by step guide for creating a new LEAN Data Source.
- 
+ - See [Tutorials](https://www.quantconnect.com/docs/v2/our-platform/datasets/contributing-datasets) for a step by step guide for creating a new LEAN Data Source.
