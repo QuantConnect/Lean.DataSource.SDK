@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>QuantConnect.DataSource</RootNamespace>
     <AssemblyName>QuantConnect.DataSource.MyCustomDataType</AssemblyName>
     <OutputPath>bin\$(Configuration)</OutputPath>

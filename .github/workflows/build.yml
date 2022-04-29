@@ -40,4 +40,4 @@ jobs:
         run: dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
       - name: Run Tests
-        run: dotnet test ./tests/bin/Release/net5.0/Tests.dll
+        run: dotnet test ./tests/bin/Release/net6.0/Tests.dll
