@@ -9,10 +9,10 @@ from pythonnet import set_runtime
 with open('tmp.json', 'w') as fp:
     dump({
             "runtimeOptions": {
-                "tfm": "net5.0",
+                "tfm": "net6.0",
                 "framework": {
                     "name": "Microsoft.NETCore.App",
-                    "version": "5.0.0"
+                    "version": "6.0.0"
                  }
              }
          },
