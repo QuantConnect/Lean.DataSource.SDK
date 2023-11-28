@@ -9,10 +9,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    container:
-        image: quantconnect/lean:foundation
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Free space
+        run: df -h && rm -rf /opt/hostedtoolcache* && df -h
+
+      - name: Pull Foundation Image
+        uses: addnab/docker-run-action@v3
+        with:
+          image: quantconnect/lean:foundation
 
       - name: Checkout Lean Same Branch
         id: lean-same-branch
