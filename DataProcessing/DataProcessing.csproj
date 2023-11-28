@@ -8,6 +8,7 @@
     <ItemGroup>
         <PackageReference Include="QuantConnect.Lean.Engine" Version="2.5.*"/>
         <PackageReference Include="QuantConnect.Research" Version="2.5.*"/>
+        <PackageReference Include="QuantConnect.Messaging" Version="2.5.*"/>
         <PackageReference Include="QuantConnect.pythonnet" Version="2.0.*" />
         <PackageReference Include="fasterflect" Version="3.0.0" />
     </ItemGroup>
