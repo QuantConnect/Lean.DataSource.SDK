@@ -19,5 +19,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QuantConnect.DataSource.csproj" />
+	  <ProjectReference Include="..\..\Lean\Tests\QuantConnect.Tests.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
