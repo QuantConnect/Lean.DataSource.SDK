@@ -33,7 +33,7 @@ namespace QuantConnect.DataSource
         { }
 
         /// <inheritdoc cref="HistoryProviderBase.GetHistory(IEnumerable{HistoryRequest}, DateTimeZone)"/>
-        public override IEnumerable<Slice>? GetHistory(IEnumerable<HistoryRequest> requests, DateTimeZone sliceTimeZone)
+        public override IEnumerable<Slice> GetHistory(IEnumerable<HistoryRequest> requests, DateTimeZone sliceTimeZone)
         {
             // Create subscription objects from the configs
             var subscriptions = new List<Subscription>();

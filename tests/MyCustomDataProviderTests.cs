@@ -29,6 +29,9 @@ namespace QuantConnect.DataLibrary.Tests
     [TestFixture]
     public class MyCustomDataProviderTests
     {
+        /// <inheritdoc cref="MyCustomDataProvider"/>
+        private readonly MyCustomDataProvider _historyDataProvider = new();
+
         private static IEnumerable<TestCaseData> TestParameters
         {
             get
@@ -48,14 +51,37 @@ namespace QuantConnect.DataLibrary.Tests
                 yield return new TestCaseData(option, Resolution.Second, TickType.Trade, TimeSpan.FromMinutes(60), false)
                     .SetDescription("Invalid Symbol - Canonical doesn't support")
                     .SetCategory("Invalid");
+
+                /// <see cref="Slice.Delistings"/>
+                yield return new TestCaseData(Symbol.Create("AAA.1", SecurityType.Equity, Market.USA), Resolution.Hour, TickType.Trade, TimeSpan.FromDays(2))
+                    .SetDescription("Delisted Symbol - the DataSource supports the history of delisted ones or not")
+                    .SetCategory("Valid/Invalid");
+
+                /// <see cref="Slice.SymbolChangedEvents"/>
+                yield return new TestCaseData(Symbol.Create("SPWR", SecurityType.Equity, Market.USA), Resolution.Hour, TickType.Trade, TimeSpan.FromDays(2))
+                    .SetDescription("Mapping Symbol")
+                    .SetCategory("Valid");
             }
         }
 
         [Test, TestCaseSource(nameof(TestParameters))]
         public void GetsHistory(Symbol symbol, Resolution resolution, TickType tickType, TimeSpan period, bool isThrowNotImplementedException)
         {
-            var historyDataProvider = new MyCustomDataProvider();
+            var request = GetHistoryRequest(resolution, tickType, symbol, period);
 
+            try
+            {
+                IEnumerable<Slice> slices = _historyDataProvider.GetHistory(new[] { request }, TimeZones.Utc)?.ToList();
+                Assert.IsNull(slices);
+            }
+            catch (NotImplementedException)
+            {
+                Assert.IsTrue(isThrowNotImplementedException);
+            }
+        }        
+
+        private HistoryRequest GetHistoryRequest(Resolution resolution, TickType tickType, Symbol symbol, TimeSpan period)
+        {
             var utcNow = DateTime.UtcNow;
             var dataType = LeanData.GetDataType(resolution, tickType);
             var marketHoursDatabase = MarketHoursDatabase.FromDataFolder();
@@ -63,8 +89,7 @@ namespace QuantConnect.DataLibrary.Tests
             var exchangeHours = marketHoursDatabase.GetExchangeHours(symbol.ID.Market, symbol, symbol.SecurityType);
             var dataTimeZone = marketHoursDatabase.GetDataTimeZone(symbol.ID.Market, symbol, symbol.SecurityType);
 
-            var requests = new[] {
-                new HistoryRequest(
+            return new HistoryRequest(
                 startTimeUtc: utcNow.Add(-period),
                 endTimeUtc: utcNow,
                 dataType: dataType,
@@ -77,18 +102,7 @@ namespace QuantConnect.DataLibrary.Tests
                 isCustomData: false,
                 DataNormalizationMode.Raw,
                 tickType: tickType
-                )
-            };
-
-            try
-            {
-                IEnumerable<Slice> slices = historyDataProvider.GetHistory(requests, TimeZones.Utc)?.ToList();
-                Assert.IsNull(slices);
-            }
-            catch (NotImplementedException)
-            {
-                Assert.IsTrue(isThrowNotImplementedException);
-            }
+                );
         }
     }
 }
