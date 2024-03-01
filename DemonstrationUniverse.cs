@@ -16,7 +16,7 @@
 
 using System.Linq;
 using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Lean.DataSource;
+using QuantConnect.DataSource;
 
 namespace QuantConnect.Algorithm.CSharp
 {

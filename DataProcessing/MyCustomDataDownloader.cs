@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using QuantConnect.Configuration;
 using QuantConnect.Data.Auxiliary;
-using QuantConnect.Lean.DataSource;
+using QuantConnect.DataSource;
 using QuantConnect.Lean.Engine.DataFeeds;
 using QuantConnect.Logging;
 using QuantConnect.Util;

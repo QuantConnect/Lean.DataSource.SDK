@@ -21,7 +21,7 @@ using System.IO;
 using QuantConnect.Data;
 using System.Collections.Generic;
 
-namespace QuantConnect.Lean.DataSource
+namespace QuantConnect.DataSource
 {
     /// <summary>
     /// Example custom data type
