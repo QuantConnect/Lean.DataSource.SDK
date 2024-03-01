@@ -14,9 +14,7 @@
  *
 */
 
-using System;
 using System.Linq;
-using QuantConnect.Data;
 using QuantConnect.Data.UniverseSelection;
 using QuantConnect.DataSource;
 
