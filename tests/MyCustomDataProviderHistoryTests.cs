@@ -23,16 +23,17 @@ using QuantConnect.Tests;
 using QuantConnect.Lean.DataSource.MyCustom;
 using QuantConnect.Securities;
 using System.Collections.Generic;
+using QuantConnect.Tests.Common.Exceptions;
 
 namespace QuantConnect.DataLibrary.Tests
 {
     [TestFixture]
-    public class MyCustomDataProviderTests
+    public class MyCustomDataProviderHistoryTests
     {
         /// <inheritdoc cref="MyCustomDataProvider"/>
         private readonly MyCustomDataProvider _historyDataProvider = new();
 
-        private static IEnumerable<TestCaseData> TestParameters
+        internal static IEnumerable<TestCaseData> TestParameters
         {
             get
             {
@@ -78,9 +79,9 @@ namespace QuantConnect.DataLibrary.Tests
             {
                 Assert.IsTrue(isThrowNotImplementedException);
             }
-        }        
+        }
 
-        private HistoryRequest GetHistoryRequest(Resolution resolution, TickType tickType, Symbol symbol, TimeSpan period)
+        internal static HistoryRequest GetHistoryRequest(Resolution resolution, TickType tickType, Symbol symbol, TimeSpan period)
         {
             var utcNow = DateTime.UtcNow;
             var dataType = LeanData.GetDataType(resolution, tickType);
