@@ -22,7 +22,7 @@ using QuantConnect.Data;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace QuantConnect.DataSource
+namespace QuantConnect.Lean.DataSource
 {
     /// <summary>
     /// Example custom data type

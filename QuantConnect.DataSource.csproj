@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>QuantConnect.DataSource</RootNamespace>
-    <AssemblyName>QuantConnect.DataSource.MyCustomDataType</AssemblyName>
+    <RootNamespace>QuantConnect.Lean.DataSource</RootNamespace>
+    <AssemblyName>QuantConnect.Lean.DataSource.MyCustomDataType</AssemblyName>
     <OutputPath>bin\$(Configuration)</OutputPath>
-    <DocumentationFile>$(OutputPath)\QuantConnect.DataSource.MyCustomDataType.xml</DocumentationFile>
+    <DocumentationFile>$(OutputPath)\QuantConnect.Lean.DataSource.MyCustomDataType.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

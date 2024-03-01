@@ -20,7 +20,7 @@ using NUnit.Framework;
 using QuantConnect.Data;
 using QuantConnect.Util;
 using QuantConnect.Tests;
-using QuantConnect.DataSource;
+using QuantConnect.Lean.DataSource;
 using QuantConnect.Securities;
 using System.Collections.Generic;
 
@@ -53,12 +53,12 @@ namespace QuantConnect.DataLibrary.Tests
                     .SetCategory("Invalid");
 
                 /// <see cref="Slice.Delistings"/>
-                yield return new TestCaseData(Symbol.Create("AAA.1", SecurityType.Equity, Market.USA), Resolution.Hour, TickType.Trade, TimeSpan.FromDays(2))
+                yield return new TestCaseData(Symbol.Create("AAA.1", SecurityType.Equity, Market.USA), Resolution.Hour, TickType.Trade, TimeSpan.FromDays(2), true)
                     .SetDescription("Delisted Symbol - the DataSource supports the history of delisted ones or not")
                     .SetCategory("Valid/Invalid");
 
                 /// <see cref="Slice.SymbolChangedEvents"/>
-                yield return new TestCaseData(Symbol.Create("SPWR", SecurityType.Equity, Market.USA), Resolution.Hour, TickType.Trade, TimeSpan.FromDays(2))
+                yield return new TestCaseData(Symbol.Create("SPWR", SecurityType.Equity, Market.USA), Resolution.Hour, TickType.Trade, TimeSpan.FromDays(2), true)
                     .SetDescription("Mapping Symbol")
                     .SetCategory("Valid");
             }

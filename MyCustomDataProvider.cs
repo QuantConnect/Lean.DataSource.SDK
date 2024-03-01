@@ -14,14 +14,14 @@
  *
 */
 
+using System;
 using NodaTime;
 using QuantConnect.Data;
 using System.Collections.Generic;
-using QuantConnect.Lean.Engine.HistoricalData;
 using QuantConnect.Lean.Engine.DataFeeds;
-using System;
+using QuantConnect.Lean.Engine.HistoricalData;
 
-namespace QuantConnect.DataSource
+namespace QuantConnect.Lean.DataSource
 {
     /// <summary>
     /// Implementation of Custom Data Provider
