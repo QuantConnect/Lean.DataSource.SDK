@@ -20,7 +20,7 @@ using NUnit.Framework;
 using QuantConnect.Data;
 using QuantConnect.Util;
 using QuantConnect.Tests;
-using QuantConnect.Lean.DataSource;
+using QuantConnect.Lean.DataSource.MyCustom;
 using QuantConnect.Securities;
 using System.Collections.Generic;
 

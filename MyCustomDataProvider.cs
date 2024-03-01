@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using QuantConnect.Lean.Engine.DataFeeds;
 using QuantConnect.Lean.Engine.HistoricalData;
 
-namespace QuantConnect.Lean.DataSource
+namespace QuantConnect.Lean.DataSource.MyCustom
 {
     /// <summary>
     /// Implementation of Custom Data Provider
