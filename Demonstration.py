@@ -43,5 +43,5 @@ class CustomDataAlgorithm(QCAlgorithm):
 
         :param OrderEvent orderEvent: Order event details containing details of the events
         '''
-        if orderEvent.Status == OrderStatus.Fill:
+        if orderEvent.Status == OrderStatus.Filled:
             self.Debug(f'Purchased Stock: {orderEvent.Symbol}')
