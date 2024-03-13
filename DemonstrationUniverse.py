@@ -16,7 +16,7 @@ from AlgorithmImports import *
 ### <summary>
 ### Example algorithm using the custom data type as a source of alpha
 ### </summary>
-class CustomDataUniverse(QCAlgorithm): 
+class CustomDataUniverse(QCAlgorithm):
     def Initialize(self):
         ''' Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized. '''
 
@@ -28,7 +28,15 @@ class CustomDataUniverse(QCAlgorithm):
         self.SetCash(100000)
 
         # add a custom universe data source (defaults to usa-equity)
-        self.AddUniverse(MyCustomDataUniverseType, "MyCustomDataUniverseType", Resolution.Daily, self.UniverseSelection)
+        universe = self.AddUniverse(MyCustomDataUniverse, self.UniverseSelection)
+
+        history = self.History(universe, TimeSpan(1, 0, 0, 0))
+        if len(history) != 1:
+            raise ValueError(f"Unexpected history count {len(history)}! Expected 1")
+
+        for dataForDate in history:
+            if len(dataForDate) < 300:
+                raise ValueError(f"Unexpected historical universe data!")
 
     def UniverseSelection(self, data):
         ''' Selected the securities
@@ -37,7 +45,7 @@ class CustomDataUniverse(QCAlgorithm):
         :return: List of Symbol objects '''
 
         for datum in data:
-            self.Log(f"{datum.Symbol},{datum.Followers},{datum.DayPercentChange},{datum.WeekPercentChange}")
+            self.Log(f"{datum.Symbol},{datum.SomeNumericProperty},{datum.SomeCustomProperty}")
         
         # define our selection criteria
         return [d.Symbol for d in data if d.SomeCustomProperty == 'buy']
