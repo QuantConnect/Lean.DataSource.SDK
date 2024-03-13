@@ -21,6 +21,7 @@ using System.IO;
 using QuantConnect.Data;
 using System.Collections.Generic;
 using System.Globalization;
+using QuantConnect.Data.UniverseSelection;
 
 namespace QuantConnect.DataSource
 {
@@ -28,12 +29,17 @@ namespace QuantConnect.DataSource
     /// Example custom data type
     /// </summary>
     [ProtoContract(SkipConstructor = true)]
-    public class MyCustomDataUniverseType : BaseData
+    public class MyCustomDataUniverse : BaseDataCollection
     {
+        /// <summary>
+        /// Time passed between the date of the data and the time the data became available to us
+        /// </summary>
+        private readonly static TimeSpan _period = TimeSpan.FromDays(1);
+
         /// <summary>
         /// Some custom data property
         /// </summary>
-        public string SomeCustomProperty { get; set; } 
+        public string SomeCustomProperty { get; set; }
 
         /// <summary>
         /// Some custom data property
@@ -41,14 +47,9 @@ namespace QuantConnect.DataSource
         public decimal SomeNumericProperty { get; set; }
 
         /// <summary>
-        /// Time passed between the date of the data and the time the data became available to us
-        /// </summary>
-        public TimeSpan Period { get; set; } = TimeSpan.FromDays(1);
-
-        /// <summary>
         /// Time the data became available
         /// </summary>
-        public override DateTime EndTime => Time + Period;
+        public override DateTime EndTime => Time + _period;
 
         /// <summary>
         /// Return the URL string source of the file. This will be converted to a stream
@@ -67,7 +68,8 @@ namespace QuantConnect.DataSource
                     "universe",
                     $"{date.ToStringInvariant(DateFormat.EightCharacter)}.csv"
                 ),
-                SubscriptionTransportMedium.LocalFile
+                SubscriptionTransportMedium.LocalFile,
+                FileFormat.FoldingCollection
             );
         }
 
@@ -85,12 +87,12 @@ namespace QuantConnect.DataSource
 
             var someNumericProperty = decimal.Parse(csv[2], NumberStyles.Any, CultureInfo.InvariantCulture); 
 
-            return new MyCustomDataUniverseType
+            return new MyCustomDataUniverse
             {
                 Symbol = new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1]),
                 SomeNumericProperty = someNumericProperty,
                 SomeCustomProperty = csv[3],
-                Time =  date - Period,
+                Time =  date - _period,
                 Value = someNumericProperty
             };
         }
@@ -136,6 +138,23 @@ namespace QuantConnect.DataSource
         public override DateTimeZone DataTimeZone()
         {
             return DateTimeZone.Utc;
+        }
+
+        /// <summary>
+        /// Clones this instance
+        /// </summary>
+        public override BaseData Clone()
+        {
+            return new MyCustomDataUniverse
+            {
+                Symbol = Symbol,
+                Time = Time,
+                Data = Data,
+                Value = Value,
+
+                SomeNumericProperty = SomeNumericProperty,
+                SomeCustomProperty = SomeCustomProperty,
+            };
         }
     }
 }
