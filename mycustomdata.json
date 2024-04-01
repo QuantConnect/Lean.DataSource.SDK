@@ -1,0 +1,16 @@
+{
+	"description": "",
+	
+	"platforms-features": [
+		{
+			"Platforms": ["Cloud Platform", "Local Platform", "LEAN CLI"],
+			"Download Data": [0,1,1],
+			"Backtesting": [0,1,1],
+			"Optimization": [0,1,1],
+			"Live Trading":	[0,1,1]
+		}
+	],
+	"data-supported": [ "TradeBar", "MyCustomData" ], 
+	"more-information": "https://www.mycustomdata.com",
+	"documentation": ""
+}
