@@ -12,5 +12,30 @@
 	],
 	"data-supported": [ "TradeBar", "MyCustomData" ], 
 	"more-information": "https://www.mycustomdata.com",
-	"documentation": ""
+	"documentation": "",
+	"module-specification": {
+		"download": {
+			"data-types": [
+				"Trade",
+				"Quote",
+				"OpenInterest"
+			],
+			"resolutions": [
+				"Tick",
+				"Second",
+				"Minute",
+				"Hour",
+				"Daily"
+			],
+			"security-types": [
+				"Equity",
+				"FutureOption",
+				"..."
+			],
+			"markets": [
+				"USA",
+				"..."
+			]
+		}
+	}
 }
