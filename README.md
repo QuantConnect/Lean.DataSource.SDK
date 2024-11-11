@@ -32,15 +32,28 @@ Once ready, please contact support@quantconnect.com and we will create a listing
 Key requirements for new vendors include:
 
  - A well-defined dataset with a clear and static vision for the data to minimize churn or changes as people will be building systems from it. This is easiest with "raw" data (e.g. sunshine hours vs a sentiment algorithm)
+ - Suitable delievery frequency, e.g. daily, weekly, but not annually (unless it is a "research-base" or "regime-detection" dataset with sufficiently long history)
  - Robust ticker and security links to ensure the tickers are tracked well through time, or accurately point in time. ISIN, FIGI, or point in time ticker supported
  - Robust funding to ensure viable for at least 1 year
  - Robust API to ensure reliable up-time. No dead links on site or and 502 servers while using API
  - Consistent delivery schedule, on time and in time for market trading
  - Consistent data format with notifications and lead time on data format updates
  - At least 1 year of historical point in time data
+ - Look-ahead bias free data
  - Survivorship bias free data
  - Good documentation for the dataset
 
+### Checklist Before Development/Submission
+
+Some key factors to check the validity of the data processing:
+
+ - The timestamp of the data entry is instantenous, i.e. it is not roll back to add data to the previous date's data file.
+   - Use a realistic timestamp for the data entry if the exact time of delivery is unknown
+     - the processing time for the newly added entries
+     - period offset, e.g. 1-week offset
+     - etc.
+ - Ensure that the processed data is time-named according to the representative date of the data, but not the end-time timestamp. 
+   - For example, data of 2024-10-01 00:00 to 2024-10-02 00:00 should be named 20241001 but not 20241002.
 
 ### Tutorials
 
