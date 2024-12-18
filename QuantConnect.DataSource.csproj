@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>QuantConnect.DataSource</RootNamespace>
     <AssemblyName>QuantConnect.DataSource.MyCustomDataType</AssemblyName>
     <OutputPath>bin\$(Configuration)</OutputPath>
@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="QuantConnect.Common" Version="2.5.*" />
-	  <PackageReference Include="QuantConnect.Lean.Engine" Version="2.5.*" />
+    <PackageReference Include="QuantConnect.Lean.Engine" Version="2.5.*" />
     <PackageReference Include="protobuf-net" Version="3.1.33" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
