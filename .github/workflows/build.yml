@@ -8,18 +8,18 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - name: Free space
-        run: df -h && sudo rm -rf /usr/local/lib/android && sudo rm -rf /opt/ghc && rm -rf /opt/hostedtoolcache* && df -h
-
-      - name: Pull Foundation Image
-        uses: addnab/docker-run-action@v3
+      - name: Liberate disk space
+        uses: jlumbroso/free-disk-space@main
         with:
-          image: quantconnect/lean:foundation
+          tool-cache: true
+          large-packages: false
+          docker-images: false
+          swap-storage: false
 
       - name: Checkout Lean Same Branch
         id: lean-same-branch
@@ -40,11 +40,15 @@ jobs:
       - name: Move Lean
         run: mv Lean ../Lean
 
-      - name: BuildDataSource
-        run: dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: BuildTests
-        run: dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: Run Tests
-        run: dotnet test ./tests/bin/Release/net6.0/Tests.dll
+      - uses: addnab/docker-run-action@v3
+        with:
+          image: quantconnect/lean:foundation
+          options: --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.SDK -v /home/runner/work:/__w
+          shell: bash
+          run: |
+            # BuildDataSource
+            dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
+            # BuildTests
+            dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
+            # Run Tests
+            dotnet test ./tests/bin/Release/net9.0/Tests.dll
