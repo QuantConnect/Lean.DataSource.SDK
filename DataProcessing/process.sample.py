@@ -2,7 +2,7 @@
 # Requirements:
 # python -m pip install clr-loader==0.1.7
 # python -m pip install pythonnet==3.0.0a2
-# This script must be executed in ./bin/Debug/net6.0 after the follwing command is executed
+# This script must be executed in ./bin/Debug/net9.0 after the follwing command is executed
 # dotnet build .\DataProcessing\
 import os
 from CLRImports import *
