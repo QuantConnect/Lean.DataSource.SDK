@@ -28,7 +28,7 @@ namespace QuantConnect.Lean.DataSource.MyCustom
     /// <summary>
     /// Implementation of Custom Data Provider
     /// </summary>
-    public class MyCustomDataProvider : SynchronizingHistoryProvider, IDataQueueHandler
+    public class MyCustomDataProvider : SynchronizingHistoryProvider, IDataQueueHandler, IDataQueueUniverseProvider
     {
         /// <summary>
         /// <inheritdoc cref="IDataAggregator"/>
@@ -155,6 +155,21 @@ namespace QuantConnect.Lean.DataSource.MyCustom
                 return false;
             }
 
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Symbol> LookupSymbols(Symbol symbol, bool includeExpired, string securityCurrency = null)
+        {
+            if (!symbol.SecurityType.IsOption())
+            {
+                throw new ArgumentException($"Unsupported security type: {symbol.SecurityType}", nameof(symbol));
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public bool CanPerformSelection()
+        {
             throw new NotImplementedException();
         }
     }
