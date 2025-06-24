@@ -25,6 +25,7 @@ using QuantConnect.Logging;
 using System.Threading.Tasks;
 using QuantConnect.Data.Market;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using QuantConnect.Lean.DataSource.MyCustom;
 
 namespace QuantConnect.DataLibrary.Tests
@@ -69,6 +70,57 @@ namespace QuantConnect.DataLibrary.Tests
             foreach (var config in configs)
             {
                 dataQueueHandlerProvider.Unsubscribe(config);
+            }
+
+            Thread.Sleep(1_000);
+        }
+
+        [TestCaseSource(nameof(TestParameters))]
+        public void StreamsOptionChainData(Symbol symbol, Resolution resolution)
+        {
+            Assert.Pass();
+
+            var canonicalOption = Symbol.CreateCanonicalOption(symbol);
+
+            var dataProvider = new MyCustomDataProvider();
+
+            var configs = dataProvider.LookupSymbols(canonicalOption, true).SelectMany(optionContract => GetSubscriptionDataConfigs(optionContract, resolution)).ToList();
+
+            var symbolOpenInterest = new ConcurrentDictionary<Symbol, Dictionary<Type, int>>();
+
+            foreach (var config in configs)
+            {
+                symbolOpenInterest[config.Symbol] = new Dictionary<Type, int>
+                {
+                    [typeof(QuoteBar)] = 0,
+                    [typeof(TradeBar)] = 0
+                };
+
+                ProcessFeed(
+                    dataProvider.Subscribe(config, (s, e) => { }),
+                    (baseData) =>
+                    {
+                        if (baseData != null)
+                        {
+                            Log.Trace($"{baseData}");
+                            switch (baseData)
+                            {
+                                case QuoteBar qb:
+                                    symbolOpenInterest[qb.Symbol][typeof(QuoteBar)] += 1;
+                                    break;
+                                case TradeBar tb:
+                                    symbolOpenInterest[tb.Symbol][typeof(TradeBar)] += 1;
+                                    break;
+                            }
+                        }
+                    });
+            }
+
+            Thread.Sleep(1_000);
+
+            foreach (var config in configs)
+            {
+                dataProvider.Unsubscribe(config);
             }
 
             Thread.Sleep(1_000);
