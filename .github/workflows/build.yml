@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Liberate disk space
         uses: jlumbroso/free-disk-space@main
@@ -23,7 +23,7 @@ jobs:
 
       - name: Checkout Lean Same Branch
         id: lean-same-branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         continue-on-error: true
         with:
           ref: ${{ github.ref }}
@@ -32,7 +32,7 @@ jobs:
 
       - name: Checkout Lean Master
         if: steps.lean-same-branch.outcome != 'success'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: QuantConnect/Lean
           path: Lean
@@ -51,4 +51,4 @@ jobs:
             # BuildTests
             dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
             # Run Tests
-            dotnet test ./tests/bin/Release/net9.0/Tests.dll
+            dotnet test ./tests/bin/Release/net10.0/Tests.dll
