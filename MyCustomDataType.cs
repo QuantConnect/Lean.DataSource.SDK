@@ -96,7 +96,6 @@ namespace QuantConnect.DataSource
             {
                 Symbol = Symbol,
                 Time = Time,
-                EndTime = EndTime,
                 SomeCustomProperty = SomeCustomProperty,
             };
         }
