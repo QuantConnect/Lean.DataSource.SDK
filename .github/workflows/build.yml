@@ -37,6 +37,9 @@ jobs:
       - name: Run Tests
         run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
 
+      - name: Build LEAN Launcher
+        run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
       - name: Run C# Demo Algorithm
         run: |
           cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
