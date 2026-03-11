@@ -37,53 +37,20 @@ jobs:
       - name: Run Tests
         run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
 
+      - name: Build LEAN Launcher
+        run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /p:OutputPath=bin/Release /v:quiet /p:WarningLevel=1
+
       - name: Run C# Demo Algorithm
-        run: |
-          cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
-          {
-              "algorithm-type-name": "CustomDataAlgorithm",
-              "algorithm-language": "CSharp",
-              "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
-              "data-folder": "../Lean/Data/"
-          }
-          EOF
-          runInContainer dotnet run --project ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj --configuration Release -- --config ./demo-csharp-config.json
+        run: runInContainer dotnet ../Lean/Launcher/bin/Release/QuantConnect.Lean.Launcher.dll --data-folder "/__w/Lean.DataSource.SDK/Lean/Data/" --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location "/__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll" --log-handler ConsoleErrorLogHandler --close-automatically true
 
       - name: Run Python Demo Algorithm
-        run: |
-          cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
-          {
-              "algorithm-type-name": "CustomDataAlgorithm",
-              "algorithm-language": "Python",
-              "algorithm-location": "Demonstration.py",
-              "data-folder": "../Lean/Data/"
-          }
-          EOF
-          runInContainer dotnet run --project ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj --configuration Release -- --config ./demo-python-config.json
+        run: runInContainer dotnet ../Lean/Launcher/bin/Release/QuantConnect.Lean.Launcher.dll --data-folder "/__w/Lean.DataSource.SDK/Lean/Data/" --algorithm-language Python --algorithm-type-name CustomDataAlgorithm --algorithm-location "/__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py" --log-handler ConsoleErrorLogHandler --close-automatically true
 
       - name: Run C# Universe Demo Algorithm
-        run: |
-          cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
-          {
-              "algorithm-type-name": "CustomDataUniverse",
-              "algorithm-language": "CSharp",
-              "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
-              "data-folder": "../Lean/Data/"
-          }
-          EOF
-          runInContainer dotnet run --project ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj --configuration Release -- --config ./demo-csharp-config.json
+        run: runInContainer dotnet ../Lean/Launcher/bin/Release/QuantConnect.Lean.Launcher.dll --data-folder "/__w/Lean.DataSource.SDK/Lean/Data/" --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location "/__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll" --log-handler ConsoleErrorLogHandler --close-automatically true
 
       - name: Run Python Universe Demo Algorithm
-        run: |
-          cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
-          {
-              "algorithm-type-name": "CustomDataUniverse",
-              "algorithm-language": "Python",
-              "algorithm-location": "DemonstrationUniverse.py",
-              "data-folder": "../Lean/Data/"
-          }
-          EOF
-          runInContainer dotnet run --project ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj --configuration Release -- --config ./demo-python-config.json
+        run: runInContainer dotnet ../Lean/Launcher/bin/Release/QuantConnect.Lean.Launcher.dll --data-folder "/__w/Lean.DataSource.SDK/Lean/Data/" --algorithm-language Python --algorithm-type-name CustomDataUniverse --algorithm-location "/__w/Lean.DataSource.SDK/Lean.DataSource.SDK/DemonstrationUniverse.py" --log-handler ConsoleErrorLogHandler --close-automatically true
 
       - name: Stop container
         run: docker rm -f test-container
