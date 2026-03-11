@@ -40,6 +40,9 @@ jobs:
       - name: Build LEAN Launcher
         run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /p:OutputPath=bin/Release /v:quiet /p:WarningLevel=1
 
+      - name: Copy DataSource to LEAN Launcher
+        run: runInContainer cp ./tests/bin/Release/net10.0/QuantConnect.DataSource.MyCustomDataType.dll ../Lean/Launcher/bin/Release/
+
       - name: Run C# Demo Algorithm
         run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --log-handler ConsoleErrorLogHandler --close-automatically true"
 
