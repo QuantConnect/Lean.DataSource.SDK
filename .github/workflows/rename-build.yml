@@ -40,11 +40,3 @@ jobs:
 
       - name: Run Renamed Tests
         run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
-
-      - name: Build LEAN Launcher
-        run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: Copy sample data to LEAN Data folder
-        run: cp -r ../Lean.DataSource.RenameDataset/output/* ../Lean/Data/
-
-

@@ -16,6 +16,9 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
 
+      - name: Copy sample data to LEAN Data folder
+        run: cp -r ../Lean.DataSource.SDK/output/* ../Lean/Data/
+
       - name: Start container
         run: |
           docker run -d \
@@ -37,11 +40,11 @@ jobs:
       - name: Stop container
         run: docker rm -f test-container
 
-      - name: Run C# Demonstration Algorithm
+      - name: Run C# Demo Algorithm
         run: |
           cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
           {
-              "algorithm-type-name": "Demostration",
+              "algorithm-type-name": "Demonstration",
               "algorithm-language": "CSharp",
               "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
               "data-folder": "../Lean/Data/"
@@ -49,23 +52,23 @@ jobs:
           EOF
           runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-csharp-config.json
 
-      - name: Run Python Demonstration Algorithm
+      - name: Run Python Demo Algorithm
         run: |
           cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
           {
-              "algorithm-type-name": "Demostration",
+              "algorithm-type-name": "Demonstration",
               "algorithm-language": "Python",
-              "algorithm-location": "Demostration.py",
+              "algorithm-location": "Demonstration.py",
               "data-folder": "../Lean/Data/"
           }
           EOF
           runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-python-config.json
 
-      - name: Run C# Demonstration Universe Algorithm
+      - name: Run C# Universe Demo Algorithm
         run: |
           cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
           {
-              "algorithm-type-name": "DemostrationUniverse",
+              "algorithm-type-name": "DemonstrationUniverse",
               "algorithm-language": "CSharp",
               "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
               "data-folder": "../Lean/Data/"
@@ -73,13 +76,13 @@ jobs:
           EOF
           runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-csharp-config.json
 
-      - name: Run Python Demonstration Universe Algorithm
+      - name: Run Python Universe Demo Algorithm
         run: |
           cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
           {
-              "algorithm-type-name": "DemostrationUniverse",
+              "algorithm-type-name": "DemonstrationUniverse",
               "algorithm-language": "Python",
-              "algorithm-location": "DemostrationUniverse.py",
+              "algorithm-location": "DemonstrationUniverse.py",
               "data-folder": "../Lean/Data/"
           }
           EOF
