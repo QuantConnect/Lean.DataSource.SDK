@@ -37,6 +37,51 @@ jobs:
       - name: Stop container
         run: docker rm -f test-container
 
-  rename:
-    needs: build
-    uses: ./.github/workflows/rename-build.yml
+      - name: Run C# Demonstration Algorithm
+        run: |
+          cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
+          {
+              "algorithm-type-name": "Demostration",
+              "algorithm-language": "CSharp",
+              "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
+              "data-folder": "../Lean/Data/"
+          }
+          EOF
+          runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-csharp-config.json
+
+      - name: Run Python Demonstration Algorithm
+        run: |
+          cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
+          {
+              "algorithm-type-name": "Demostration",
+              "algorithm-language": "Python",
+              "algorithm-location": "Demostration.py",
+              "data-folder": "../Lean/Data/"
+          }
+          EOF
+          runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-python-config.json
+
+      - name: Run C# Demonstration Universe Algorithm
+        run: |
+          cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
+          {
+              "algorithm-type-name": "DemostrationUniverse",
+              "algorithm-language": "CSharp",
+              "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
+              "data-folder": "../Lean/Data/"
+          }
+          EOF
+          runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-csharp-config.json
+
+      - name: Run Python Demonstration Universe Algorithm
+        run: |
+          cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
+          {
+              "algorithm-type-name": "DemostrationUniverse",
+              "algorithm-language": "Python",
+              "algorithm-location": "DemostrationUniverse.py",
+              "data-folder": "../Lean/Data/"
+          }
+          EOF
+          runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-python-config.json
+
