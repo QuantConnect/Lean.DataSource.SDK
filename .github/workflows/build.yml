@@ -13,40 +13,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Liberate disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          large-packages: false
-          docker-images: false
-          swap-storage: false
-
-      - name: Checkout Lean Same Branch
-        id: lean-same-branch
-        uses: actions/checkout@v4
-        continue-on-error: true
-        with:
-          ref: ${{ github.ref }}
-          repository: QuantConnect/Lean
-          path: Lean
-
-      - name: Checkout Lean Master
-        if: steps.lean-same-branch.outcome != 'success'
-        uses: actions/checkout@v4
-        with:
-          repository: QuantConnect/Lean
-          path: Lean
-
-      - name: Move Lean
-        run: mv Lean ../Lean
-
-      - name: Pull foundation image
-        run: docker pull quantconnect/lean:foundation
-
-      - name: Define docker helper
-        run: |
-          echo 'runInContainer() { docker exec test-container "$@"; }' > $HOME/ci_functions.sh
-          echo "BASH_ENV=$HOME/ci_functions.sh" >> $GITHUB_ENV
+      - name: Setup
+        uses: ./.github/actions/setup
 
       - name: Start container
         run: |
@@ -69,26 +37,6 @@ jobs:
       - name: Stop container
         run: docker rm -f test-container
 
-      - name: Rename Dataset
-        run: |
-          cp -r . ../Lean.DataSource.RenameDataset
-          cd ../Lean.DataSource.RenameDataset
-          python renameDataset.py RenameDataset
-
-      - name: Start container (renamed)
-        run: |
-          docker run -d \
-            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.RenameDataset \
-            -v /home/runner/work:/__w \
-            --name test-container \
-            quantconnect/lean:foundation \
-            tail -f /dev/null
-
-      - name: Build Renamed DataSource
-        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: Build Renamed Tests
-        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: Run Renamed Tests
-        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
+  rename:
+    needs: build
+    uses: ./.github/workflows/rename-build.yml

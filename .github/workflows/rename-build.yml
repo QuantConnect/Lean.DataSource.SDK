@@ -1,0 +1,71 @@
+name: Rename & Test
+
+on:
+  workflow_call:
+
+jobs:
+  rename-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Rename Dataset
+        run: |
+          cp -r . ../Lean.DataSource.RenameDataset
+          cd ../Lean.DataSource.RenameDataset
+          python renameDataset.py RenameDataset
+
+      - name: Start container (renamed)
+        run: |
+          docker run -d \
+            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.RenameDataset \
+            -v /home/runner/work:/__w \
+            --name test-container \
+            quantconnect/lean:foundation \
+            tail -f /dev/null
+
+      - name: Build Renamed DataSource
+        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
+      - name: Build Renamed Tests
+        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
+      - name: Run Renamed Tests
+        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
+
+      - name: Build LEAN Launcher
+        run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
+      - name: Copy sample data to LEAN Data folder
+        run: cp -r ../Lean.DataSource.RenameDataset/output/* ../Lean/Data/
+
+      - name: Run C# Demonstration Algorithm
+        run: |
+          cat > ../Lean.DataSource.RenameDataset/demo-csharp-config.json << 'EOF'
+          {
+              "algorithm-type-name": "RenameDatasetAlgorithm",
+              "algorithm-language": "CSharp",
+              "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
+              "data-folder": "../Lean/Data/"
+          }
+          EOF
+          runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-csharp-config.json
+
+      - name: Run Python Demonstration Algorithm
+        run: |
+          cat > ../Lean.DataSource.RenameDataset/demo-python-config.json << 'EOF'
+          {
+              "algorithm-type-name": "RenameDatasetAlgorithm",
+              "algorithm-language": "Python",
+              "algorithm-location": "RenameDatasetAlgorithm.py",
+              "data-folder": "../Lean/Data/"
+          }
+          EOF
+          runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-python-config.json
+
+      - name: Stop container
+        run: docker rm -f test-container
