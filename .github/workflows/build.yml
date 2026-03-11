@@ -37,9 +37,6 @@ jobs:
       - name: Run Tests
         run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
 
-      - name: Stop container
-        run: docker rm -f test-container
-
       - name: Run C# Demo Algorithm
         run: |
           cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
@@ -87,4 +84,7 @@ jobs:
           }
           EOF
           runInContainer dotnet ../Lean/Launcher/bin/Release/net10.0/QuantConnect.Lean.Launcher.dll --config ./demo-python-config.json
+
+      - name: Stop container
+        run: docker rm -f test-container
 
