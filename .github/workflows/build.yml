@@ -41,7 +41,7 @@ jobs:
         run: |
           cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
           {
-              "algorithm-type-name": "Demonstration",
+              "algorithm-type-name": "CustomDataAlgorithm",
               "algorithm-language": "CSharp",
               "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
               "data-folder": "../Lean/Data/"
@@ -53,7 +53,7 @@ jobs:
         run: |
           cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
           {
-              "algorithm-type-name": "Demonstration",
+              "algorithm-type-name": "CustomDataAlgorithm",
               "algorithm-language": "Python",
               "algorithm-location": "Demonstration.py",
               "data-folder": "../Lean/Data/"
@@ -65,7 +65,7 @@ jobs:
         run: |
           cat > ../Lean.DataSource.SDK/demo-csharp-config.json << 'EOF'
           {
-              "algorithm-type-name": "DemonstrationUniverse",
+              "algorithm-type-name": "CustomDataUniverse",
               "algorithm-language": "CSharp",
               "algorithm-location": "tests/bin/Release/net10.0/Tests.dll",
               "data-folder": "../Lean/Data/"
@@ -77,7 +77,7 @@ jobs:
         run: |
           cat > ../Lean.DataSource.SDK/demo-python-config.json << 'EOF'
           {
-              "algorithm-type-name": "DemonstrationUniverse",
+              "algorithm-type-name": "CustomDataUniverse",
               "algorithm-language": "Python",
               "algorithm-location": "DemonstrationUniverse.py",
               "data-folder": "../Lean/Data/"
