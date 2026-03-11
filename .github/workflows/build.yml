@@ -41,16 +41,16 @@ jobs:
         run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /p:OutputPath=bin/Release /v:quiet /p:WarningLevel=1
 
       - name: Run C# Demo Algorithm
-        run: runInContainer bash -c "cd ./Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --log-handler ConsoleErrorLogHandler --close-automatically true"
+        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --log-handler ConsoleErrorLogHandler --close-automatically true"
 
       - name: Run Python Demo Algorithm
-        run: runInContainer bash -c "cd ./Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language python--algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --log-handler ConsoleErrorLogHandler --close-automatically true"
+        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language python--algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --log-handler ConsoleErrorLogHandler --close-automatically true"
 
       - name: Run C# Universe Demo Algorithm
-        run: runInContainer bash -c "cd ./Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --log-handler ConsoleErrorLogHandler --close-automatically true"
+        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --log-handler ConsoleErrorLogHandler --close-automatically true"
 
       - name: Run Python Universe Demo Algorithm
-        run: runInContainer bash -c "cd ./Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language python--algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/DemonstrationUniverse.py --log-handler ConsoleErrorLogHandler --close-automatically true"
+        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet .\QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language python--algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/DemonstrationUniverse.py --log-handler ConsoleErrorLogHandler --close-automatically true"
 
       - name: Stop container
         run: docker rm -f test-container
