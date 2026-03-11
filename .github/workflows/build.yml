@@ -40,51 +40,34 @@ jobs:
       - name: Move Lean
         run: mv Lean ../Lean
 
-      - uses: addnab/docker-run-action@v3
-        with:
-          image: quantconnect/lean:foundation
-          options: --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.SDK -v /home/runner/work:/__w
-          shell: bash
-          run: |
-            # BuildDataSource
-            dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
-            # BuildTests
-            dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
-            # Run Tests
-            dotnet test ./tests/bin/Release/net10.0/Tests.dll
+      - name: Pull foundation image
+        run: docker pull quantconnect/lean:foundation
 
-  rename-test:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Define docker helper
+        run: |
+          echo 'runInContainer() { docker exec test-container "$@"; }' > $HOME/ci_functions.sh
+          echo "BASH_ENV=$HOME/ci_functions.sh" >> $GITHUB_ENV
 
-      - name: Liberate disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          large-packages: false
-          docker-images: false
-          swap-storage: false
+      - name: Start container
+        run: |
+          docker run -d \
+            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.SDK \
+            -v /home/runner/work:/__w \
+            --name test-container \
+            quantconnect/lean:foundation \
+            tail -f /dev/null
 
-      - name: Checkout Lean Same Branch
-        id: lean-same-branch
-        uses: actions/checkout@v4
-        continue-on-error: true
-        with:
-          ref: ${{ github.ref }}
-          repository: QuantConnect/Lean
-          path: Lean
+      - name: Build DataSource
+        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
-      - name: Checkout Lean Master
-        if: steps.lean-same-branch.outcome != 'success'
-        uses: actions/checkout@v4
-        with:
-          repository: QuantConnect/Lean
-          path: Lean
+      - name: Build Tests
+        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
-      - name: Move Lean
-        run: mv Lean ../Lean
+      - name: Run Tests
+        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
+
+      - name: Stop container
+        run: docker rm -f test-container
 
       - name: Rename Dataset
         run: |
@@ -92,15 +75,20 @@ jobs:
           cd ../Lean.DataSource.RenameDataset
           python renameDataset.py RenameDataset
 
-      - uses: addnab/docker-run-action@v3
-        with:
-          image: quantconnect/lean:foundation
-          options: --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.RenameDataset -v /home/runner/work:/__w
-          shell: bash
-          run: |
-            # BuildDataSource
-            dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
-            # BuildTests
-            dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1 && \
-            # Run Tests
-            dotnet test ./tests/bin/Release/net10.0/Tests.dll
+      - name: Start container (renamed)
+        run: |
+          docker run -d \
+            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.RenameDataset \
+            -v /home/runner/work:/__w \
+            --name test-container \
+            quantconnect/lean:foundation \
+            tail -f /dev/null
+
+      - name: Build Renamed DataSource
+        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
+      - name: Build Renamed Tests
+        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+
+      - name: Run Renamed Tests
+        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
