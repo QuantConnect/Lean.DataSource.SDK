@@ -45,3 +45,7 @@ class CustomDataAlgorithm(QCAlgorithm):
         '''
         if orderEvent.Status == OrderStatus.Filled:
             self.Debug(f'Purchased Stock: {orderEvent.Symbol}')
+    
+    def OnEndOfAlgorithm(self):
+        if self.Transactions.Count == 0:
+            raise Exception("No trades")
