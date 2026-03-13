@@ -44,10 +44,18 @@ jobs:
         run: runInContainer cp ./tests/bin/Release/net10.0/QuantConnect.DataSource.MyCustomDataType.dll ../Lean/Launcher/bin/Release/
 
       - name: Run C# Demo Algorithm
-        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true"
+        run: |
+          output=$(runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true" 2>&1)
+          echo "$output"
+          echo "$output" | grep -q "STATISTICS:: Total Orders [^0]" || { echo "Algorithm placed no trades"; exit 1; }
 
       - name: Run Python Demo Algorithm
-        run: runInContainer bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --close-automatically true || [ $? -eq 134 ]'
+        run: |
+          output=$(runInContainer bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --close-automatically true' 2>&1)
+          rc=$?
+          echo "$output"
+          [ $rc -eq 0 ] || [ $rc -eq 134 ] || exit $rc
+          echo "$output" | grep -q "STATISTICS:: Total Orders [^0]" || { echo "Algorithm placed no trades"; exit 1; }
 
       - name: Run C# Universe Demo Algorithm
         run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true"
