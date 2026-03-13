@@ -17,42 +17,43 @@ from AlgorithmImports import *
 ### Example algorithm using the custom data type as a source of alpha
 ### </summary>
 class CustomDataUniverse(QCAlgorithm):
-    def Initialize(self):
+
+    def initialize(self):
         ''' Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized. '''
 
         # Data ADDED via universe selection is added with Daily resolution.
-        self.UniverseSettings.Resolution = Resolution.Daily
+        self.universe_settings.resolution = Resolution.DAILY
 
-        self.SetStartDate(2022, 2, 14)
-        self.SetEndDate(2022, 2, 18)
-        self.SetCash(100000)
+        self.set_start_date(2022, 2, 14)
+        self.set_end_date(2022, 2, 18)
+        self.set_cash(100000)
 
         # add a custom universe data source (defaults to usa-equity)
-        universe = self.AddUniverse(MyCustomDataUniverse, self.UniverseSelection)
+        universe = self.add_universe(MyCustomDataUniverse, self._universe_selection)
 
-        history = self.History(universe, TimeSpan(1, 0, 0, 0))
+        history = self.history(universe, 1)
         if len(history) != 1:
             raise ValueError(f"Unexpected history count {len(history)}! Expected 1")
 
-        for dataForDate in history:
-            if len(dataForDate) < 300:
+        for data_for_date in history:
+            if len(data_for_date) < 300:
                 raise ValueError(f"Unexpected historical universe data!")
 
-    def UniverseSelection(self, data):
+    def _universe_selection(self, data):
         ''' Selected the securities
         
         :param List of MyCustomUniverseType data: List of MyCustomUniverseType
         :return: List of Symbol objects '''
 
         for datum in data:
-            self.Log(f"{datum.Symbol},{datum.SomeNumericProperty},{datum.SomeCustomProperty}")
+            self.log(f"{datum.symbol},{datum.some_numeric_property},{datum.some_custom_property}")
         
         # define our selection criteria
-        return [d.Symbol for d in data if d.SomeCustomProperty == 'buy']
+        return [d.symbol for d in data if d.some_custom_property == 'buy']
 
-    def OnSecuritiesChanged(self, changes):
+    def on_securities_changed(self, changes):
         ''' Event fired each time that we add/remove securities from the data feed
 		
         :param SecurityChanges changes: Security additions/removals for this time step
         '''
-        self.Log(changes.ToString())
+        self.log(changes.to_string())
