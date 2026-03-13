@@ -98,6 +98,7 @@ def main():
     # --- Text replacements ---
     # Order matters: longer/more-specific patterns first to avoid partial matches
     replacements = [
+        ("Lean.DataSource.SDK", root.name),
         ("MyCustomDataQueueHandler", f"{name}DataQueueHandler"),
         ("MyCustomDataDownloader", downloader_name),
         ("MyCustomDataProvider", provider_name),
@@ -132,6 +133,7 @@ def main():
         "tests/Tests.csproj",
         "DataProcessing/MyCustomDataDownloader.cs",
         "DataProcessing/Program.cs",
+        ".github/workflows/build.yml",
     ]
 
     print("Text replacements:")

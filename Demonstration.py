@@ -17,31 +17,32 @@ from AlgorithmImports import *
 ### Example algorithm using the custom data type as a source of alpha
 ### </summary>
 class CustomDataAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    
+    def initialize(self):
         ''' Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized.'''
-        
-        self.SetStartDate(2020, 10, 7)   #Set Start Date
-        self.SetEndDate(2020, 10, 11)    #Set End Date
-        self.equity_symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.custom_data_symbol = self.AddData(MyCustomDataType, self.equity_symbol).Symbol
+        self.set_start_date(2013, 10, 7)
+        self.set_end_date(2013, 10, 11)
+        self._equity_symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._custom_data_symbol = self.add_data(MyCustomDataType, self._equity_symbol).symbol
 
-    def OnData(self, slice):
+    def on_data(self, slice):
         ''' OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
 
         :param Slice slice: Slice object keyed by symbol containing the stock data
         '''
-        data = slice.Get(MyCustomDataType)
-        if data:
-            custom_data = data[self.custom_data_symbol]
-            if custom_data.SomeCustomProperty == "buy":
-                self.SetHoldings(self.equitySymbol, 1)
-            elif custom_data.SomeCustomProperty == "sell":
-                self.SetHoldings(self.equitySymbol, -1)
+        custom_data = slice.get(MyCustomDataType)
+        if custom_data:
+            point = custom_data[self._custom_data_symbol]
+            if point.some_custom_property == "buy":
+                self.set_holdings(self._equity_symbol, 1)
+            elif point.some_custom_property == "sell":
+                self.set_holdings(self._equity_symbol, -1)
 
-    def OnOrderEvent(self, orderEvent):
+    def on_order_event(self, order_event):
         ''' Order fill event handler. On an order fill update the resulting information is passed to this method.
 
-        :param OrderEvent orderEvent: Order event details containing details of the events
+        :param OrderEvent order_event: Order event details containing details of the events
         '''
-        if orderEvent.Status == OrderStatus.Filled:
-            self.Debug(f'Purchased Stock: {orderEvent.Symbol}')
+        if order_event.status == OrderStatus.FILLED:
+            self.debug(f'Purchased Stock: {order_event.symbol}')
+    
