@@ -1,0 +1,43 @@
+name: Setup
+description: Liberate disk space, checkout Lean, pull foundation image, define docker helper
+
+runs:
+  using: composite
+  steps:
+    - name: Liberate disk space
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+        large-packages: false
+        docker-images: false
+        swap-storage: false
+
+    - name: Checkout Lean Same Branch
+      id: lean-same-branch
+      uses: actions/checkout@v5
+      continue-on-error: true
+      with:
+        ref: ${{ github.head_ref || github.ref_name }}
+        repository: QuantConnect/Lean
+        path: Lean
+
+    - name: Checkout Lean Master
+      if: steps.lean-same-branch.outcome != 'success'
+      uses: actions/checkout@v5
+      with:
+        repository: QuantConnect/Lean
+        path: Lean
+
+    - name: Move Lean
+      run: mv Lean ../Lean
+      shell: bash
+
+    - name: Pull foundation image
+      run: docker pull quantconnect/lean:foundation
+      shell: bash
+
+    - name: Define docker helper
+      run: |
+        echo 'runInContainer() { docker exec test-container "$@"; }' > $HOME/ci_functions.sh
+        echo "BASH_ENV=$HOME/ci_functions.sh" >> $GITHUB_ENV
+      shell: bash

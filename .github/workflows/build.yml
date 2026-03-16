@@ -11,42 +11,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Liberate disk space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          large-packages: false
-          docker-images: false
-          swap-storage: false
+      - name: Setup
+        uses: ./.github/actions/setup
 
-      - name: Checkout Lean Same Branch
-        id: lean-same-branch
-        uses: actions/checkout@v4
-        continue-on-error: true
-        with:
-          ref: ${{ github.ref }}
-          repository: QuantConnect/Lean
-          path: Lean
-
-      - name: Checkout Lean Master
-        if: steps.lean-same-branch.outcome != 'success'
-        uses: actions/checkout@v4
-        with:
-          repository: QuantConnect/Lean
-          path: Lean
-
-      - name: Move Lean
-        run: mv Lean ../Lean
-
-      - name: Pull foundation image
-        run: docker pull quantconnect/lean:foundation
-
-      - name: Define docker helper
-        run: |
-          echo 'runInContainer() { docker exec test-container "$@"; }' > $HOME/ci_functions.sh
-          echo "BASH_ENV=$HOME/ci_functions.sh" >> $GITHUB_ENV
+      - name: Copy sample data to LEAN Data folder
+        run: cp -r ../Lean.DataSource.SDK/output/* ../Lean/Data/
 
       - name: Start container
         run: |
@@ -66,29 +37,33 @@ jobs:
       - name: Run Tests
         run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
 
+      - name: Build LEAN Launcher
+        run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /p:OutputPath=bin/Release /v:quiet /p:WarningLevel=1
+
+      - name: Copy DataSource to LEAN Launcher
+        run: runInContainer cp ./tests/bin/Release/net10.0/QuantConnect.DataSource.MyCustomDataType.dll ../Lean/Launcher/bin/Release/
+
+      - name: Run C# Demo Algorithm
+        run: |
+          output=$(runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true" 2>&1)
+          echo "$output"
+          echo "$output" | grep -q "STATISTICS:: Total Orders [^0]" || { echo "Algorithm placed no trades"; exit 1; }
+
+      - name: Run Python Demo Algorithm
+        run: |
+          output=$(runInContainer bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --close-automatically true' 2>&1) || true
+          echo "$output"
+          echo "$output" | grep -q "STATISTICS:: Total Orders [^0]" || { echo "Algorithm placed no trades"; exit 1; }
+
+      - name: Run C# Universe Demo Algorithm
+        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true"
+
+      - name: Run Python Universe Demo Algorithm
+        run: runInContainer bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/DemonstrationUniverse.py --close-automatically true || [ $? -eq 134 ]'
+
       - name: Stop container
         run: docker rm -f test-container
 
-      - name: Rename Dataset
-        run: |
-          cp -r . ../Lean.DataSource.RenameDataset
-          cd ../Lean.DataSource.RenameDataset
-          python renameDataset.py RenameDataset
-
-      - name: Start container (renamed)
-        run: |
-          docker run -d \
-            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.RenameDataset \
-            -v /home/runner/work:/__w \
-            --name test-container \
-            quantconnect/lean:foundation \
-            tail -f /dev/null
-
-      - name: Build Renamed DataSource
-        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: Build Renamed Tests
-        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
-
-      - name: Run Renamed Tests
-        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
+  rename:
+    needs: build
+    uses: ./.github/workflows/rename-build.yml
