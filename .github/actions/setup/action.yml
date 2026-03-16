@@ -14,16 +14,16 @@ runs:
 
     - name: Checkout Lean Same Branch
       id: lean-same-branch
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       continue-on-error: true
       with:
-        ref: ${{ github.ref }}
+        ref: ${{ github.head_ref || github.ref_name }}
         repository: QuantConnect/Lean
         path: Lean
 
     - name: Checkout Lean Master
       if: steps.lean-same-branch.outcome != 'success'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: QuantConnect/Lean
         path: Lean
