@@ -17,13 +17,9 @@
 """
 Renames the SDK template classes, files, and references to match a real dataset.
 
-The dataset name is derived from the repo folder name (everything after the last dot).
-For example, if the repo is cloned as "Lean.DataSource.MyVendorData", the name is "MyVendorData".
-
 Usage:
-    python renameDataset.py              # derives name from folder
-    python renameDataset.py MyVendorData # explicit name
-    python renameDataset.py --dry-run    # preview changes without applying
+    python renameDataset.py VendorName DatasetName       # explicit names
+    python renameDataset.py --dry-run VendorName DatasetName  # preview changes
 """
 
 import os
@@ -58,6 +54,7 @@ def rename_file(src: Path, dst: Path, dry_run: bool) -> None:
         return
     print(f"  {src.relative_to(root)} -> {dst.relative_to(root)}")
     if not dry_run:
+        dst.parent.mkdir(parents=True, exist_ok=True)
         src.rename(dst)
 
 
@@ -68,15 +65,22 @@ def main():
     dry_run = "--dry-run" in sys.argv
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
 
-    if args:
-        name = args[0]
-    else:
-        name = root.name.rsplit(".", 1)[-1]
-
-    if name in ("SDK", "DataSource") or not name[0].isupper():
-        print(f"Error: '{name}' doesn't look like a valid dataset name.")
-        print("Usage: python renameDataset.py VendorNameDatasetName")
+    if len(args) != 2:
+        print("Error: expected exactly 2 arguments: VendorName DatasetName")
+        print("Usage: python renameDataset.py VendorName DatasetName")
         sys.exit(1)
+
+    vendor_name = args[0]
+    dataset_name = args[1]
+
+    for label, val in [("VendorName", vendor_name), ("DatasetName", dataset_name)]:
+        if not val[0].isupper():
+            print(f"Error: {label} '{val}' must be PascalCase.")
+            sys.exit(1)
+
+    name = vendor_name + dataset_name
+    vendor_lower = vendor_name.lower()
+    dataset_lower = dataset_name.lower()
 
     universe_name = f"{name}Universe"
     algorithm_name = f"{name}Algorithm"
@@ -85,7 +89,9 @@ def main():
     provider_name = f"{name}DataProvider"
     name_lower = name.lower()
 
-    print(f"Dataset name: {name}")
+    print(f"Vendor name:  {vendor_name}")
+    print(f"Dataset name: {dataset_name}")
+    print(f"Combined:     {name}")
     print(f"Universe:     {universe_name}")
     print(f"Algorithm:    {algorithm_name}")
     print(f"Downloader:   {downloader_name}")
@@ -187,7 +193,7 @@ def main():
     # --- Directory renames (sample data) ---
     print("\nDirectory renames:")
     dir_renames = [
-        ("output/alternative/mycustomdatatype", f"output/alternative/{name_lower}"),
+        ("output/alternative/mycustomdatatype", f"output/alternative/{vendor_lower}/{dataset_lower}"),
     ]
     for old_rel, new_rel in dir_renames:
         rename_file(root / old_rel, root / new_rel, dry_run)

@@ -18,7 +18,7 @@ jobs:
         run: |
           cp -r . ../Lean.DataSource.RenameDataset
           cd ../Lean.DataSource.RenameDataset
-          python renameDataset.py RenameDataset
+          python renameDataset.py Rename Dataset
 
       - name: Start container (renamed)
         run: |
