@@ -40,7 +40,8 @@ namespace QuantConnect.DataLibrary.Tests
             _repoRoot,
             "output",
             "alternative",
-            "mycustomdatatype",
+            "myvendorname",
+            "mydatasetname",
             "spy.csv"
         );
 
@@ -48,7 +49,8 @@ namespace QuantConnect.DataLibrary.Tests
             _repoRoot,
             "output",
             "alternative",
-            "mycustomdatatype",
+            "myvendorname",
+            "mydatasetname",
             "universe",
             "20220214.csv"
         );

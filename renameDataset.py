@@ -116,7 +116,8 @@ def main():
         ("CustomDataUniverse", universe_algo_name),
         ("DemonstrationUniverse", universe_algo_name),
         ("Demonstration", algorithm_name),
-        ("mycustomdatatype", name_lower),
+        ("myvendorname", vendor_lower),
+        ("mydatasetname", dataset_lower),
         ("mycustomdata", name_lower),
     ]
 
@@ -193,7 +194,7 @@ def main():
     # --- Directory renames (sample data) ---
     print("\nDirectory renames:")
     dir_renames = [
-        ("output/alternative/mycustomdatatype", f"output/alternative/{vendor_lower}/{dataset_lower}"),
+        ("output/alternative/myvendorname/mydatasetname", f"output/alternative/{vendor_lower}/{dataset_lower}"),
     ]
     for old_rel, new_rel in dir_renames:
         rename_file(root / old_rel, root / new_rel, dry_run)
