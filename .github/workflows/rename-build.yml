@@ -16,14 +16,14 @@ jobs:
 
       - name: Rename Dataset
         run: |
-          cp -r . ../Lean.DataSource.RenameDataset
-          cd ../Lean.DataSource.RenameDataset
+          cp -r . ../Lean.DataSource.Rename
+          cd ../Lean.DataSource.Rename
           python renameDataset.py Rename Dataset
 
       - name: Start container (renamed)
         run: |
           docker run -d \
-            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.RenameDataset \
+            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.Rename \
             -v /home/runner/work:/__w \
             --name test-container \
             quantconnect/lean:foundation \
