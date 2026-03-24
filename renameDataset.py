@@ -88,10 +88,12 @@ def main():
     downloader_name = f"{name}DataDownloader"
     provider_name = f"{name}DataProvider"
     name_lower = name.lower()
+    repo_name = f"Lean.DataSource.{vendor_name}"
 
     print(f"Vendor name:  {vendor_name}")
     print(f"Dataset name: {dataset_name}")
     print(f"Combined:     {name}")
+    print(f"Repo name:    {repo_name}")
     print(f"Universe:     {universe_name}")
     print(f"Algorithm:    {algorithm_name}")
     print(f"Downloader:   {downloader_name}")
@@ -104,7 +106,7 @@ def main():
     # --- Text replacements ---
     # Order matters: longer/more-specific patterns first to avoid partial matches
     replacements = [
-        ("Lean.DataSource.SDK", root.name),
+        ("Lean.DataSource.SDK", repo_name),
         ("MyCustomDataQueueHandler", f"{name}DataQueueHandler"),
         ("MyCustomDataDownloader", downloader_name),
         ("MyCustomDataProvider", provider_name),
@@ -202,7 +204,7 @@ def main():
     if dry_run:
         print("\nDry run complete. Re-run without --dry-run to apply.")
     else:
-        print("\nDone! You may want to rename the repo folder and .sln file manually.")
+        print("\nDone!")
 
 
 if __name__ == "__main__":
