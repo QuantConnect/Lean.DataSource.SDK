@@ -6,7 +6,10 @@ on:
 jobs:
   rename-build:
     if: github.repository == 'QuantConnect/Lean.DataSource.SDK'
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
+    container:
+        image: quantconnect/lean:foundation
+        options: --cpus 12 --memory 12g
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -20,20 +23,11 @@ jobs:
           cd ../Lean.DataSource.Rename
           python renameDataset.py Rename Dataset
 
-      - name: Start container (renamed)
-        run: |
-          docker run -d \
-            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.Rename \
-            -v /home/runner/work:/__w \
-            --name test-container \
-            quantconnect/lean:foundation \
-            tail -f /dev/null
-
       - name: Build Renamed DataSource
-        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+        run: cd ../Lean.DataSource.Rename && dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
       - name: Build Renamed Tests
-        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+        run: cd ../Lean.DataSource.Rename && dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
       - name: Run Renamed Tests
-        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
+        run: cd ../Lean.DataSource.Rename && dotnet test ./tests/bin/Release/net10.0/Tests.dll
