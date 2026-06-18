@@ -6,9 +6,16 @@ on:
   pull_request:
     branches: [master]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
+    container:
+        image: quantconnect/lean:foundation
+        options: --cpus 12 --memory 12g
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -19,50 +26,38 @@ jobs:
       - name: Copy sample data to LEAN Data folder
         run: cp -r ../Lean.DataSource.SDK/output/* ../Lean/Data/
 
-      - name: Start container
-        run: |
-          docker run -d \
-            --workdir /__w/Lean.DataSource.SDK/Lean.DataSource.SDK \
-            -v /home/runner/work:/__w \
-            --name test-container \
-            quantconnect/lean:foundation \
-            tail -f /dev/null
-
       - name: Build DataSource
-        run: runInContainer dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+        run: dotnet build ./QuantConnect.DataSource.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
       - name: Build Tests
-        run: runInContainer dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
+        run: dotnet build ./tests/Tests.csproj /p:Configuration=Release /v:quiet /p:WarningLevel=1
 
       - name: Run Tests
-        run: runInContainer dotnet test ./tests/bin/Release/net10.0/Tests.dll
+        run: dotnet test ./tests/bin/Release/net10.0/Tests.dll
 
       - name: Build LEAN Launcher
-        run: runInContainer dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /p:OutputPath=bin/Release /v:quiet /p:WarningLevel=1
+        run: dotnet build ../Lean/Launcher/QuantConnect.Lean.Launcher.csproj /p:Configuration=Release /p:OutputPath=bin/Release /v:quiet /p:WarningLevel=1
 
       - name: Copy DataSource to LEAN Launcher
-        run: runInContainer cp ./tests/bin/Release/net10.0/QuantConnect.DataSource.MyCustomDataType.dll ../Lean/Launcher/bin/Release/
+        run: cp ./tests/bin/Release/net10.0/QuantConnect.DataSource.MyCustomDataType.dll ../Lean/Launcher/bin/Release/
 
       - name: Run C# Demo Algorithm
         run: |
-          output=$(runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true" 2>&1)
+          output=$(bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true" 2>&1)
           echo "$output"
           echo "$output" | grep -q "STATISTICS:: Total Orders [^0]" || { echo "Algorithm placed no trades"; exit 1; }
 
       - name: Run Python Demo Algorithm
         run: |
-          output=$(runInContainer bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --close-automatically true' 2>&1) || true
+          output=$(bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataAlgorithm --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/Demonstration.py --close-automatically true' 2>&1) || true
           echo "$output"
           echo "$output" | grep -q "STATISTICS:: Total Orders [^0]" || { echo "Algorithm placed no trades"; exit 1; }
 
       - name: Run C# Universe Demo Algorithm
-        run: runInContainer bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true"
+        run: bash -c "cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language CSharp --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/tests/bin/Release/net10.0/Tests.dll --close-automatically true"
 
       - name: Run Python Universe Demo Algorithm
-        run: runInContainer bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/DemonstrationUniverse.py --close-automatically true || [ $? -eq 134 ]'
-
-      - name: Stop container
-        run: docker rm -f test-container
+        run: bash -c 'cd ../Lean/Launcher/bin/Release && dotnet ./QuantConnect.Lean.Launcher.dll --data-folder /__w/Lean.DataSource.SDK/Lean/Data/ --algorithm-language Python --algorithm-type-name CustomDataUniverse --algorithm-location /__w/Lean.DataSource.SDK/Lean.DataSource.SDK/DemonstrationUniverse.py --close-automatically true || [ $? -eq 134 ]'
 
   rename:
     needs: build
