@@ -24,7 +24,7 @@ namespace QuantConnect.DataSource
     /// </summary>
     public sealed class FxMacroDataClient : IDisposable
     {
-        public const string DefaultBaseUrl = "https://fxmacrodata.com/api/v1";
+        public const string DefaultBaseUrl = "https://api.fxmacrodata.com/v1";
 
         private readonly HttpClient _httpClient;
         private readonly bool _ownsClient;
